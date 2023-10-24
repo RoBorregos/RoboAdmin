@@ -20,15 +20,15 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & {
       id: string;
+      role?: string;
       // ...other properties
-      // role: UserRole;
     };
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    // ...other properties
+    role?: string;
+  }
 }
 
 /**
@@ -37,6 +37,22 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  // TODO: add event callback to update role
+  // events: {
+  //   signIn: async (event) => {
+  //     // Compute role and update the user just once, when signing in.
+  //     if (event.user.email) {
+  //       await prisma.user.update({
+  //         where: {
+  //           email: event.user.email,
+  //         },
+  //         data: {
+  //           role: await updateRole(event.user.email, prisma),
+  //         },
+  //       });
+  //     }
+  //   },
+  // },
   callbacks: {
     session: ({ session, user }) => ({
       ...session,
