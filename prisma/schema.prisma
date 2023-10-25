@@ -60,6 +60,32 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
+model SponsorPack {
+    id        String     @id @default(cuid())
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    name      String
+    benefits  Benefits[]
+}
+
+model Benefits {
+    id            String        @id @default(cuid())
+    createdAt     DateTime      @default(now())
+    updatedAt     DateTime      @updatedAt
+    esDescription String
+    enDescription String
+    SponsorPack   SponsorPack[]
+}
+
+model Sponsor {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    name      String
+    img_path  String
+    url       String
+}
+
 model Telemetry {
     id        String   @id
     createdAt DateTime @default(now())
