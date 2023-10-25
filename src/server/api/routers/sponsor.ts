@@ -11,30 +11,62 @@ import {
 // TODO: add proper authorization
 
 export const sponsorRouter = createTRPCRouter({
-  getSponsors: publicProcedure
+  getSponsorsIds: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.db.sponsor.findMany({ select: { id: true } });
+  }),
+  getSponsorById: publicProcedure
     .input(
       z.object({
-        texto: z.string(),
+        id: z.string().optional(),
       }),
     )
     .query(async ({ input, ctx }) => {
-      await ctx.db.sponsor.findMany();
+      if (!input.id) {
+        return null;
+      }
+      return await ctx.db.sponsor.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
     }),
 
   createOrUpdateSponsor: publicProcedure
     .input(SponsorModel)
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.sponsor.upsert({
-        where: {
-          id: input.id,
-        },
-        update: {
-          ...input,
-        },
-        create: {
-          ...input,
-        },
-      });
+      try {
+        await ctx.db.sponsor.upsert({
+          where: {
+            id: input.id ?? "-1",
+          },
+          update: {
+            ...input,
+          },
+          create: {
+            ...input,
+          },
+        });
+        return true;
+      } catch (error) {
+        console.log(error);
+        return false;
+      }
+    }),
+
+  deleteSponsorById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        await ctx.db.sponsor.delete({
+          where: {
+            id: input.id,
+          },
+        });
+        return true;
+      } catch (error) {
+        console.log(error);
+        return false;
+      }
     }),
 
   getSponsorPacks: publicProcedure
