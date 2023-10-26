@@ -11,9 +11,20 @@ import {
 // TODO: add proper authorization
 
 export const sponsorRouter = createTRPCRouter({
-  getSponsorsIds: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.db.sponsor.findMany({ select: { id: true } });
-  }),
+  getSponsorsIds: publicProcedure
+    .input(z.object({ search: z.string().optional() }))
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.sponsor.findMany({
+        where: {
+          OR: [
+            { name: { contains: input.search ?? "", mode: "insensitive" } },
+            { url: { contains: input.search ?? "", mode: "insensitive" } },
+            { img_path: { contains: input.search ?? "", mode: "insensitive" } },
+          ],
+        },
+        select: { id: true },
+      });
+    }),
   getSponsorById: publicProcedure
     .input(
       z.object({
@@ -69,14 +80,45 @@ export const sponsorRouter = createTRPCRouter({
       }
     }),
 
-  getSponsorPacks: publicProcedure
-    .input(
-      z.object({
-        texto: z.string(),
-      }),
-    )
+  getSponsorPacksIds: publicProcedure
+    .input(z.object({ search: z.string().optional() }))
     .query(async ({ input, ctx }) => {
-      await ctx.db.sponsorPack.findMany();
+      return await ctx.db.sponsorPack.findMany({
+        where: {
+          benefits: {
+            some: {
+              OR: [
+                {
+                  enDescription: {
+                    contains: input.search ?? "",
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  esDescription: {
+                    contains: input.search ?? "",
+                    mode: "insensitive",
+                  },
+                },
+              ],
+            },
+          },
+          name: { contains: input.search ?? "", mode: "insensitive" },
+        },
+        select: {
+          id: true,
+        },
+      });
+    }),
+
+  getSponsorPacksById: publicProcedure
+    .input(z.object({ id: z.string().optional() }))
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.sponsorPack.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
     }),
 
   createOrUpdateSponsorPack: publicProcedure
@@ -84,7 +126,7 @@ export const sponsorRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       await ctx.db.sponsorPack.upsert({
         where: {
-          id: input.id,
+          id: input.id ?? "-1",
         },
         update: {
           ...input,
@@ -95,29 +137,67 @@ export const sponsorRouter = createTRPCRouter({
       });
     }),
 
-  getBenefits: publicProcedure
-    .input(
-      z.object({
-        texto: z.string(),
-      }),
-    )
+  getBenefitsIds: publicProcedure
+    .input(z.object({ search: z.string().optional() }))
     .query(async ({ input, ctx }) => {
-      await ctx.db.benefits.findMany();
+      return await ctx.db.benefits.findMany({
+        where: {
+          enDescription: { contains: input.search ?? "", mode: "insensitive" },
+          esDescription: { contains: input.search ?? "", mode: "insensitive" },
+        },
+        select: { id: true },
+      });
+    }),
+
+  getBenefitById: publicProcedure
+    .input(z.object({ id: z.string().optional() }))
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.benefits.findUnique({
+        where: { id: input.id },
+        select: {
+          id: true,
+          esDescription: true,
+          enDescription: true,
+          updatedAt: true,
+        },
+      });
     }),
 
   createOrUpdateBenefit: publicProcedure
     .input(BenefitsModel)
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.benefits.upsert({
-        where: {
-          id: input.id,
-        },
-        update: {
-          ...input,
-        },
-        create: {
-          ...input,
-        },
-      });
+      try {
+        await ctx.db.benefits.upsert({
+          where: {
+            id: input.id ?? "-1",
+          },
+          update: {
+            ...input,
+          },
+          create: {
+            ...input,
+          },
+        });
+        return true;
+      } catch (error) {
+        console.log(error);
+        return false;
+      }
+    }),
+
+  deleteBenefitById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        await ctx.db.benefits.delete({
+          where: {
+            id: input.id,
+          },
+        });
+        return true;
+      } catch (error) {
+        console.log(error);
+        return false;
+      }
     }),
 });

@@ -18,9 +18,8 @@ const communityMemberOrUpper = [
 const authenticatedOrUpper = [...communityMemberOrUpper, "authenticated"];
 const unauthenticatedOrUpper = [...authenticatedOrUpper, "unauthenticated"];
 
-interface RoleType {
-  [key: string]: string[];
-}
+
+type RoleType = Record<string, string[]>;
 
 const roleOrUpper: RoleType = {
   admin: adminOrUpper,

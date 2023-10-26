@@ -3,29 +3,30 @@ import { useRouter } from "next/router";
 import { api } from "rbrgs/utils/api";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { RouterOutputs } from "rbrgs/utils/api";
-import { sponsorSchema } from "../schemas/sponsorSchema";
+import { benefitSchema } from "../schemas/benefitSchema";
 
 const classNameLabel = "text-lg mr-2 text-slate-800";
 const classNameField = "bg-slate-300 text-black text-base rounded-md";
 const classNameError = "bg-red-500 p-2 rounded-md text-white text-sm";
 
-export const SponsorEdit = ({
-  sponsor,
+export const BenefitEdit = ({
+  benefit,
 }: {
-  sponsor: RouterOutputs["sponsor"]["getSponsorById"] | undefined | null;
+  benefit: RouterOutputs["sponsor"]["getBenefitById"] | undefined | null;
 }) => {
   const context = api.useContext();
   const router = useRouter();
 
-  const mutationModify = api.sponsor.createOrUpdateSponsor.useMutation({
+  const mutationModify = api.sponsor.createOrUpdateBenefit.useMutation({
     onSuccess: (succeeded) => {
       if (!succeeded) {
-        alert("Sponsor creation or update failed.");
+        alert("Benefit creation or update failed.");
       } else {
+        console;
         alert(
-          "Sponsor " + (sponsor?.id ? "updated" : "created") + " successfully!",
+          "Benefit " + (benefit?.id ? "updated" : "created") + " successfully!",
         );
-        void context.sponsor.getSponsorById.invalidate({ id: sponsor?.id });
+        void context.sponsor.getSponsorById.invalidate({ id: benefit?.id });
       }
       router.reload();
     },
@@ -34,13 +35,13 @@ export const SponsorEdit = ({
     },
   });
 
-  const mutationDelete = api.sponsor.deleteSponsorById.useMutation({
+  const mutationDelete = api.sponsor.deleteBenefitById.useMutation({
     onSuccess: (succeeded) => {
       if (!succeeded) {
-        alert("Sponsor deletion failed.");
+        alert("Benefit deletion failed.");
       } else {
-        alert("Sponsor was deleted successfully!");
-        void context.sponsor.getSponsorById.invalidate({ id: sponsor?.id });
+        alert("Benefit was deleted successfully!");
+        void context.sponsor.getBenefitById.invalidate({ id: benefit?.id });
       }
       router.reload();
     },
@@ -52,76 +53,58 @@ export const SponsorEdit = ({
   return (
     <Formik
       initialValues={{
-        sponsorName: sponsor?.name ?? "",
-        sponsorImg_path: sponsor?.img_path ?? "",
-        sponsorUrl: sponsor?.url ?? "",
+        benefitEsDescription: benefit?.esDescription ?? "",
+        benefitEnDescription: benefit?.enDescription ?? "",
       }}
       onSubmit={(values) => {
         mutationModify.mutate({
-          name: values.sponsorName,
-          img_path: values.sponsorImg_path,
-          url: values.sponsorUrl,
-          id: sponsor?.id,
+          id: benefit?.id,
+          enDescription: values.benefitEnDescription,
+          esDescription: values.benefitEsDescription,
         });
       }}
-      validationSchema={sponsorSchema}
+      validationSchema={benefitSchema}
     >
       {() => (
         <Form>
           <div className="block max-w-sm rounded-lg border border-gray-200 bg-white p-6 shadow hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
             <div className="my-2">
               <div className="flex flex-row flex-wrap align-middle">
-                <label htmlFor="sponsorName" className={classNameLabel}>
-                  Sponsor name:
+                <label htmlFor="esDescription" className={classNameLabel}>
+                  esDescription:
                 </label>
                 <Field
-                  id="sponsorName"
-                  name="sponsorName"
+                  id="benefitEsDescription"
+                  name="benefitEsDescription"
                   className={classNameField}
                 />
               </div>
               <div className="my-4">
                 <ErrorMessage
                   component="a"
-                  name="sponsorName"
+                  name="benefitEsDescription"
                   className={classNameError}
                 />
               </div>
             </div>
             <div className="my-2">
               <div className="flex flex-row flex-wrap align-middle">
-                <label htmlFor="sponsorImg_path" className={classNameLabel}>
-                  img_path:
+                <label
+                  htmlFor="benefitEnDescription"
+                  className={classNameLabel}
+                >
+                  enDescription:
                 </label>
                 <Field
-                  id="sponsorImg_path"
-                  name="sponsorImg_path"
+                  id="benefitEnDescription"
+                  name="benefitEnDescription"
                   className={classNameField}
                 />
               </div>
               <div className="my-4">
                 <ErrorMessage
                   component="a"
-                  name="sponsorImg_path"
-                  className={classNameError}
-                />
-              </div>
-            </div>
-            <div className="my-2">
-              <div className="flex flex-row flex-wrap align-middle">
-                <label htmlFor="sponsorUrl" className={classNameLabel}>
-                  url:
-                </label>
-                <Field
-                  id="sponsorUrl"
-                  name="sponsorUrl"
-                  className={classNameField}
-                />
-              </div>
-              <div className="my-4">
-                <ErrorMessage
-                  component="a"
-                  name="sponsorUrl"
+                  name="benefitEnDescription"
                   className={classNameError}
                 />
               </div>
@@ -131,16 +114,16 @@ export const SponsorEdit = ({
                 type="submit"
                 className="rounded-xl bg-green-300 p-2 hover:bg-green-400"
               >
-                {sponsor?.id ? "Actualizar" : "Crear"}
+                {benefit?.id ? "Actualizar" : "Crear"}
               </button>
 
-              {sponsor?.id && (
+              {benefit?.id && (
                 <button
                   type="button"
                   onClick={() => {
                     if (confirm("¿Estás seguro de que quieres borrarlo?")) {
                       mutationDelete.mutate({
-                        id: sponsor?.id,
+                        id: benefit?.id,
                       });
                     }
                   }}
