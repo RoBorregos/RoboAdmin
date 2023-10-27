@@ -111,12 +111,24 @@ export const sponsorRouter = createTRPCRouter({
       });
     }),
 
-  getSponsorPacksById: publicProcedure
+  getSponsorPackById: publicProcedure
     .input(z.object({ id: z.string().optional() }))
     .query(async ({ input, ctx }) => {
       return await ctx.db.sponsorPack.findUnique({
         where: {
           id: input.id,
+        },
+        include: {
+          benefits: {
+            select: {
+              enDescription: true,
+              esDescription: true,
+              id: true,
+            },
+            orderBy: {
+              enDescription: "asc",
+            },
+          },
         },
       });
     }),
@@ -124,17 +136,31 @@ export const sponsorRouter = createTRPCRouter({
   createOrUpdateSponsorPack: publicProcedure
     .input(SponsorPackModel)
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.sponsorPack.upsert({
-        where: {
-          id: input.id ?? "-1",
-        },
-        update: {
-          ...input,
-        },
-        create: {
-          ...input,
-        },
-      });
+      try {
+        await ctx.db.sponsorPack.upsert({
+          where: {
+            id: input.id ?? "-1",
+          },
+          update: {
+            name: input.name,
+            benefits: {
+              deleteMany: {},
+              create: input.items,
+            },
+          },
+          create: {
+            name: input.name,
+            benefits: {
+              create: input.items,
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+        return false;
+      }
+
+      return true;
     }),
 
   getBenefitsIds: publicProcedure
@@ -163,27 +189,27 @@ export const sponsorRouter = createTRPCRouter({
       });
     }),
 
-  createOrUpdateBenefit: publicProcedure
-    .input(BenefitsModel)
-    .mutation(async ({ input, ctx }) => {
-      try {
-        await ctx.db.benefits.upsert({
-          where: {
-            id: input.id ?? "-1",
-          },
-          update: {
-            ...input,
-          },
-          create: {
-            ...input,
-          },
-        });
-        return true;
-      } catch (error) {
-        console.log(error);
-        return false;
-      }
-    }),
+  // createOrUpdateBenefit: publicProcedure
+  //   .input(BenefitsModel)
+  //   .mutation(async ({ input, ctx }) => {
+  //     try {
+  //       await ctx.db.benefits.upsert({
+  //         where: {
+  //           id: input.id ?? "-1",
+  //         },
+  //         update: {
+  //           ...input,
+  //         },
+  //         create: {
+  //           ...input,
+  //         },
+  //       });
+  //       return true;
+  //     } catch (error) {
+  //       console.log(error);
+  //       return false;
+  //     }
+  //   }),
 
   deleteBenefitById: publicProcedure
     .input(z.object({ id: z.string() }))

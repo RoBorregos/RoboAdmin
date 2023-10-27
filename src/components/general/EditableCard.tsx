@@ -6,21 +6,28 @@ export const EditableCard = ({
   editView,
   hasEdit,
   isLoading,
+  reducedView = false,
 }: {
   infoView: React.ReactNode;
   editView: React.ReactNode;
   hasEdit: boolean;
   isLoading: boolean;
+  reducedView?: boolean;
 }) => {
   const [edit, setEdit] = useState(false);
+
+  let className = "";
+  if (reducedView) {
+    className = "mr-auto w-fit bg-green-200 p-1";
+  } else {
+    className = "mb-2 ml-auto mr-auto w-fit rounded-md bg-green-200 p-2";
+  }
 
   return (
     <div className="m-2 flex w-fit flex-col">
       {hasEdit && (
         <button onClick={() => setEdit(!edit)}>
-          <p className="mb-2 ml-auto mr-auto w-fit rounded-md bg-green-200 p-2">
-            Edit
-          </p>
+          <p className={className}>Edit</p>
         </button>
       )}
       {isLoading && <p>Cargando...</p>}

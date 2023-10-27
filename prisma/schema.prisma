@@ -69,12 +69,13 @@ model SponsorPack {
 }
 
 model Benefits {
-    id            String        @id @default(cuid())
-    createdAt     DateTime      @default(now())
-    updatedAt     DateTime      @updatedAt
+    id            String      @id @default(cuid())
+    createdAt     DateTime    @default(now())
+    updatedAt     DateTime    @updatedAt
     esDescription String
     enDescription String
-    SponsorPack   SponsorPack[]
+    sponsorId     String
+    SponsorPack   SponsorPack @relation(fields: [sponsorId], references: [id], onDelete: Cascade)
 }
 
 model Sponsor {

@@ -18,4 +18,5 @@ export const SponsorModel = z.object({
 export const SponsorPackModel = z.object({
   id: z.string().optional(),
   name: z.string(),
+  items: z.array(BenefitsModel),
 });

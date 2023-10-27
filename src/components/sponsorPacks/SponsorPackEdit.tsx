@@ -9,10 +9,10 @@
 // const classNameField = "bg-slate-300 text-black text-base rounded-md";
 // const classNameError = "bg-red-500 p-2 rounded-md text-white text-sm";
 
-// export const BenefitEdit = ({
+// export const SponsorPackEdit = ({
 //   benefit,
 // }: {
-//   benefit: RouterOutputs["sponsor"]["getBenefitById"] | undefined | null;
+//   benefit: RouterOutputs["sponsor"]["getSponsorPackById"] | undefined | null;
 // }) => {
 //   const context = api.useContext();
 //   const router = useRouter();
