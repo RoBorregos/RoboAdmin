@@ -1,15 +1,16 @@
 import { useState } from "react";
-import EditUserModal from "./editModal";
+import EditUserModal from "./memberModal";
 
 const EditUser = () => {
     const [cell, setCell] = useState(true);
+
     return (
         <div className=" h-screen w-full">
             <button onClick={() => setCell(!cell)}>
                 open
             </button>
-            <EditUserModal id="1" isOpen={cell} />
-            
+            {/* <EditUserModal data =  isOpen={cell} /> */}
+
         </div>
     )
 }
