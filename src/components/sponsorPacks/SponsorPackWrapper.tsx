@@ -1,6 +1,5 @@
 import { api } from "rbrgs/utils/api";
 import { SponsorPackCard } from "./SponsorPackCard";
-// import { BenefitEdit } from "./BenefitEdit";
 import { EditableCard } from "../general/EditableCard";
 import { SponsorPackForm } from "../sponsor/SponsorPackForm";
 

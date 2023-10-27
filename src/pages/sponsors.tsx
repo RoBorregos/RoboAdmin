@@ -20,8 +20,6 @@ export default function SponsorsPage() {
     modalTitle = "Create Sponsor";
   } else if (seeWindow === "sponsorPacks") {
     modalTitle = "Create Sponsor Pack";
-  } else if (seeWindow === "benefits") {
-    modalTitle = "Create Benefit";
   }
 
   return (
@@ -55,14 +53,6 @@ export default function SponsorsPage() {
           >
             See Sponsor packs
           </button>
-          {/* <button
-            className="h-fit rounded-md bg-slate-200 p-2 hover:bg-slate-300"
-            onClick={() => {
-              setSeeWindow("benefits");
-            }}
-          >
-            See Benefits
-          </button> */}
           <SearchBar setSearch={setSearch} className="w-80" />
         </div>
       </div>
@@ -76,9 +66,6 @@ const CreateForm = ({ createType }: { createType: string }) => {
     return <SponsorEdit sponsor={undefined} />;
   } else if (createType === "sponsorPacks") {
     return <SponsorPackForm sponsorPack={undefined}/>;
-  } else if (createType === "benefits") {
-    return <></>;
-    // return <BenefitEdit benefit={undefined} />;
   } else {
     return <p>Error: no se encontró el tipo especificado: {createType}</p>;
   }
@@ -101,12 +88,6 @@ const PageContent = ({
     return (
       <div className="justify-center text-center text-2xl">
         <SponsorPackContainer search={search} />
-      </div>
-    );
-  } else if (windowType === "benefits") {
-    return (
-      <div className="justify-center text-center text-2xl">
-        {/* <BenefitContainer search={search} /> */}
       </div>
     );
   }
@@ -133,26 +114,6 @@ const SponsorContainer = ({ search }: { search: string }) => {
     </div>
   );
 };
-
-// const BenefitContainer = ({ search }: { search: string }) => {
-//   const { data: benefits, isLoading } = api.sponsor.getBenefitsIds.useQuery({
-//     search: search,
-//   });
-
-//   if (isLoading) {
-//     return <p>Cargando...</p>;
-//   } else if (!benefits || benefits.length === 0) {
-//     return <p className="text-black">No hay beneficios registrados</p>;
-//   }
-
-//   return (
-//     <div className="flex w-full flex-row flex-wrap justify-center">
-//       {benefits?.map((benefit) => (
-//         <BenefitWrapper key={benefit.id} benefitId={benefit.id} />
-//       ))}
-//     </div>
-//   );
-// };
 
 const SponsorPackContainer = ({ search }: { search: string }) => {
   const { data: sponsorPacks, isLoading } =

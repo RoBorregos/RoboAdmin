@@ -49,6 +49,7 @@ export const SponsorPackForm = ({
   }
 
   return (
+    <div className="block max-w-sm overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
     <Formik
       initialValues={{ items: itemValues, packageName: sponsorPack?.name ?? ""}}
       onSubmit={(values) => {
@@ -156,5 +157,6 @@ export const SponsorPackForm = ({
         </Form>
       )}
     </Formik>
+    </div>
   );
 };
