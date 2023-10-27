@@ -1,6 +1,3 @@
-import { env } from "rbrgs/env.mjs";
-// import Resizer from "react-image-file-resizer";
-
 export const isImgUrl = async (url: string) => {
   try {
     const res = await fetch(url, { method: "HEAD" });

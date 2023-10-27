@@ -1,7 +1,5 @@
-import { RouterOutputs } from "rbrgs/utils/api";
-import { BenefitWrapper } from "../benefit/BenefitWrapper";
+import type { RouterOutputs } from "rbrgs/utils/api";
 import { BenefitCardConcise } from "../benefit/BenefitCardConcise";
-// import { BenefitCard } from "../benefit/BenefitCard";
 
 export const SponsorPackCard = ({
   sponsorPack,

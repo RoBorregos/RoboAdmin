@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "rbrgs/utils/api";
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import { RouterOutputs } from "rbrgs/utils/api";
+import type { RouterOutputs } from "rbrgs/utils/api";
 import { sponsorSchema } from "../schemas/sponsorSchema";
 
 const classNameLabel = "text-lg mr-2 text-slate-800";

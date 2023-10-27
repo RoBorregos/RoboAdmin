@@ -1,4 +1,4 @@
-import { RouterOutputs } from "rbrgs/utils/api";
+import type { RouterOutputs } from "rbrgs/utils/api";
 
 export const BenefitCard = ({
   benefit,

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { BenefitsModel, SponsorModel, SponsorPackModel } from "rbrgs/zod/types";
+import { SponsorModel, SponsorPackModel } from "rbrgs/zod/types";
 
 import {
   createTRPCRouter,

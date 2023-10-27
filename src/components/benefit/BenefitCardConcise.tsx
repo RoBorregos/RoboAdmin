@@ -8,7 +8,7 @@ export const BenefitCardConcise = ({
   benefitId?: string;
   reducedView?: boolean;
 }) => {
-  const { data: benefit, isLoading } = api.sponsor.getBenefitById.useQuery({
+  const { data: benefit } = api.sponsor.getBenefitById.useQuery({
     id: benefitId,
   });
 

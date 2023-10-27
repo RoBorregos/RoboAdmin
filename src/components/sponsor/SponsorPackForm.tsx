@@ -2,7 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import { Formik, Field, FieldArray, Form, ErrorMessage } from "formik";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import { RouterOutputs } from "rbrgs/utils/api";
+import type { RouterOutputs } from "rbrgs/utils/api";
 import { sponsorPackSchema } from "../schemas/sponsorPackSchema";
 import { api } from "rbrgs/utils/api";
 
@@ -85,7 +85,7 @@ export const SponsorPackForm = ({
             </div>
           </div>
           <FieldArray name="items">
-            {({ insert, remove, push }) => (
+            {({remove, push }) => (
               <div className="flex flex-col gap-y-2">
                 {values?.items?.length > 0 &&
                   values.items.map((item, index) => (
