@@ -10,9 +10,9 @@ datasource db {
 
 model Example {
     id        String   @id @default(cuid())
-    name      String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    name      String
 }
 
 model Account {
@@ -93,4 +93,25 @@ model Telemetry {
     updatedAt DateTime
     name      String
     value     String
+}
+
+model SponsorHistory {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    json      String
+}
+
+model Projects {
+    id          String   @id
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime
+    typeProject String
+    title       String
+    description String?
+    wiki        String?
+    image       String?
+    color       String?
+    background  String?
+    priority    String
 }

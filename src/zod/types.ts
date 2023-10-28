@@ -20,3 +20,25 @@ export const SponsorPackModel = z.object({
   name: z.string(),
   items: z.array(BenefitsModel),
 });
+
+export const jsonSponsorFormat = z.object({
+  url_contact: z.string(),
+  sponsors: z.array(
+    z.object({
+      name: z.string(),
+      img_path: z.string(),
+      link: z.string(),
+    }),
+  ),
+  packages: z.array(
+    z.object({
+      name: z.string(),
+      benefits: z.array(
+        z.object({
+          es: z.string(),
+          en: z.string(),
+        }),
+      ),
+    }),
+  ),
+});
