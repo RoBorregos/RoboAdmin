@@ -14,6 +14,7 @@ const Layout = ({
   const routes = [
     { name: "User information", path: "/" },
     { name: "Sponsor Packs", path: "/sponsors" },
+    { name: "History", path: "/history" },
     {
       name: "Create event",
       path: "/add-event",

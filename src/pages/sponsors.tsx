@@ -83,10 +83,6 @@ export default function SponsorsPage() {
           />
         </div>
         <div className="mb-4 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-3 rounded-md bg-slate-300 p-2 duration-700 hover:bg-blue-400">
-          <BiHistory
-            size={30}
-            className="duration-1000 hover:text-purple-800"
-          />
           <BiUpload size={30} className="duration-1000 hover:text-purple-800" />
           <BiDownload
             size={30}

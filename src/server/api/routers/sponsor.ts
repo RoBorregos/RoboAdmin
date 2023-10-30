@@ -213,67 +213,71 @@ export const sponsorRouter = createTRPCRouter({
 
       // Delete all previous elements and add all new ones
       try {
-        await ctx.db.$transaction(async (prisma) => {
-          const prevJson = await generateSponsorsJson({ db: ctx.db });
+        await ctx.db.$transaction(
+          async (prisma) => {
+            const prevJson = await generateSponsorsJson({ db: ctx.db });
 
-          // Only add the previous json if it is valid
-          if (typeof prevJson === "string") {
-            await prisma.sponsorHistory.create({
-              data: {
-                json: prevJson,
+            // Only add the previous json if it is valid
+            if (typeof prevJson === "string") {
+              await prisma.sponsorHistory.create({
+                data: {
+                  json: prevJson,
+                  userId: ctx.session?.user?.id ?? "",
+                },
+              });
+            }
+
+            await prisma.benefits.deleteMany({});
+            await prisma.sponsor.deleteMany({});
+            await prisma.sponsorPack.deleteMany({});
+
+            for (const sponsor of sponsorInfo.sponsors) {
+              await prisma.sponsor.create({
+                data: {
+                  name: sponsor.name,
+                  url: sponsor.link,
+                  img_path: sponsor.img_path,
+                },
+              });
+            }
+
+            for (const sponsorPackage of sponsorInfo.packages) {
+              await prisma.sponsorPack.create({
+                data: {
+                  name: sponsorPackage.name,
+                  benefits: {
+                    create: sponsorPackage.benefits.map((benefit) => ({
+                      enDescription: benefit.en,
+                      esDescription: benefit.es,
+                    })),
+                  },
+                },
+              });
+            }
+
+            // Maintain only the last 15 history elements
+            const maintainItems = await prisma.sponsorHistory.findMany({
+              orderBy: {
+                createdAt: "desc",
               },
-            });
-          }
-
-          await prisma.benefits.deleteMany({});
-          await prisma.sponsor.deleteMany({});
-          await prisma.sponsorPack.deleteMany({});
-
-          for (const sponsor of sponsorInfo.sponsors) {
-            await prisma.sponsor.create({
-              data: {
-                name: sponsor.name,
-                url: sponsor.link,
-                img_path: sponsor.img_path,
+              select: {
+                id: true,
               },
+              take: 15,
             });
-          }
 
-          for (const sponsorPackage of sponsorInfo.packages) {
-            await prisma.sponsorPack.create({
-              data: {
-                name: sponsorPackage.name,
-                benefits: {
-                  create: sponsorPackage.benefits.map((benefit) => ({
-                    enDescription: benefit.en,
-                    esDescription: benefit.es,
-                  })),
+            await prisma.sponsorHistory.deleteMany({
+              where: {
+                id: {
+                  notIn: maintainItems.map((item) => item.id),
                 },
               },
             });
-          }
-
-          // Maintain only the last 15 history elements
-          const maintainItems = await prisma.sponsorHistory.findMany({
-            orderBy: {
-              createdAt: "desc",
-            },
-            select: {
-              id: true,
-            },
-            take: 15,
-          });
-
-          await prisma.sponsorHistory.deleteMany({
-            where: {
-              id: {
-                notIn: maintainItems.map((item) => item.id),
-              },
-            },
-          });
-        }, {
-          timeout: 10000,
-        });
+          },
+          {
+            timeout: 10000,
+          },
+        );
 
         return true;
       } catch (err) {
@@ -284,14 +288,45 @@ export const sponsorRouter = createTRPCRouter({
 
   // From the database, generate a json file with the sponsors information
   // and make a commit to the repository
-  postSponsors: publicProcedure.mutation(async ({ input, ctx }) => {
-    return await ctx.db.sponsor.findMany({
-      select: {
-        id: true,
-        name: true,
-        url: true,
-        img_path: true,
-      },
-    });
-  }),
+  postSponsors: publicProcedure.mutation(async ({ input, ctx }) => {}),
+
+  // Get the history of the sponsors information
+  getSponsorsHistory: publicProcedure
+    .input(z.object({ search: z.string().optional() }))
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.sponsorHistory.findMany({
+        where: {
+          json: {
+            contains: input.search ?? "",
+            mode: "insensitive",
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        select: {
+          id: true,
+        },
+      });
+    }),
+
+  getSponsorHistoryById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.sponsorHistory.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: {
+          updatedAt: true,
+          json: true,
+          User: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+    }),
 });

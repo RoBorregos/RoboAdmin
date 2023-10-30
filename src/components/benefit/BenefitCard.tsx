@@ -21,11 +21,11 @@ export const BenefitCard = ({
           Last Updated: {title}
         </h5>
       )}
-      <p className="break-all font-normal text-gray-700 dark:text-gray-400">
+      <p className="break-words font-normal text-gray-700 dark:text-gray-400">
         English: {benefit?.enDescription ?? "..."}
       </p>
       {!reducedView && (
-        <p className="break-all font-normal text-gray-700 dark:text-gray-400">
+        <p className="break-words font-normal text-gray-700 dark:text-gray-400">
           Español: {benefit?.esDescription ?? "..."}
         </p>
       )}
