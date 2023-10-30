@@ -4,8 +4,8 @@ import React from "react";
 
 const Layout = ({
   children,
-  title = "RoboEvents",
-  description = "RoboEvents",
+  title = "RoboAdmin",
+  description = "RoboAdmin",
 }: {
   children: React.ReactNode;
   title?: string;

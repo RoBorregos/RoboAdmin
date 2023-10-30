@@ -200,7 +200,7 @@ export const sponsorRouter = createTRPCRouter({
   // Get sponsors from the provided url and update the sponsors
   // information in the database. Save a copy of the previous sponsors
   fetchSponsors: publicProcedure
-    .input(z.object({ url: z.string().optional() }))
+    .input(z.object({ url: z.string().optional().nullable() }))
     .mutation(async ({ input, ctx }) => {
       const sponsorInfo = input?.url
         ? await SponsorsInfo({ url: input.url })
@@ -229,7 +229,7 @@ export const sponsorRouter = createTRPCRouter({
           await prisma.sponsor.deleteMany({});
           await prisma.sponsorPack.deleteMany({});
 
-          sponsorInfo.sponsors.forEach(async (sponsor) => {
+          for (const sponsor of sponsorInfo.sponsors) {
             await prisma.sponsor.create({
               data: {
                 name: sponsor.name,
@@ -237,21 +237,21 @@ export const sponsorRouter = createTRPCRouter({
                 img_path: sponsor.img_path,
               },
             });
-          });
+          }
 
-          sponsorInfo.packages.forEach(async (pack) => {
+          for (const sponsorPackage of sponsorInfo.packages) {
             await prisma.sponsorPack.create({
               data: {
-                name: pack.name,
+                name: sponsorPackage.name,
                 benefits: {
-                  create: pack.benefits.map((benefit) => ({
+                  create: sponsorPackage.benefits.map((benefit) => ({
                     enDescription: benefit.en,
                     esDescription: benefit.es,
                   })),
                 },
               },
             });
-          });
+          }
 
           // Maintain only the last 15 history elements
           const maintainItems = await prisma.sponsorHistory.findMany({
@@ -271,6 +271,8 @@ export const sponsorRouter = createTRPCRouter({
               },
             },
           });
+        }, {
+          timeout: 10000,
         });
 
         return true;
