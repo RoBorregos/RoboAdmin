@@ -62,7 +62,7 @@ export default function Home() {
             onClick={async () => {
               await createExample.mutateAsync({ texto: input });
               setInput("");
-              util.test.test2.refetch();
+              void util.test.test2.refetch();
             }}
           >
             Create Example
