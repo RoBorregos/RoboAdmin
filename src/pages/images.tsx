@@ -1,10 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState, useRef } from "react";
+import { useState } from "react";
 import ImageDrop from "rbrgs/components/imageDrop";
 import ImagePreview from "rbrgs/components/imagePreview";
 
 const ImagesPage = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [croppedImage, setCroppedImage] = useState<string | null>(null);
+
   // const [croppedData, setCroppedData] = useState<string | null>(null);
   // const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -50,12 +52,11 @@ const ImagesPage = () => {
     <div className="flex flex-col items-center justify-center">
       <ImageDrop handleFileSelect={handleFileSelect} />
       {selectedFile && (
-        <div className="">
-          <ImagePreview image={URL.createObjectURL(selectedFile)} aspectRatio={1} />
+        <div className="h-1/2">
+          <ImagePreview image={URL.createObjectURL(selectedFile)} aspectRatio={1} onFinishedCropping={(image) => setCroppedImage(image)} />
         </div>
       )}
-      {/* {croppedData && <img src={croppedData} alt="" />} */}
-      {/* <canvas className="hidden" ref={canvasRef} width={256} height={256} /> */}
+      {croppedImage && <img src={croppedImage} alt="" />}
     </div>
 
     // <div>

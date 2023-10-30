@@ -15,56 +15,86 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
 }) => {
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [preview, setPreview] = useState<string>(image);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
 
-  function onFinished() {
-    onFinishedCropping(preview);
+  const createImage = (url: string) =>
+    new Promise<HTMLImageElement>((resolve, reject) => {
+      const newImage = new Image();
+      newImage.addEventListener("load", () => resolve(newImage));
+      newImage.addEventListener("error", (error) => reject(error));
+      newImage.setAttribute("crossOrigin", "anonymous"); // needed to avoid cross-origin issues on CodeSandbox
+      newImage.src = url;
+    });
+
+  const getCroppedImg = async (imageSrc: string, pixelCrop: Area) => {
+    const newImage = await createImage(imageSrc);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    
+    if (!ctx || !newImage) {
+      return;
+    }
+
+    canvas.width = newImage.width;
+    canvas.height = newImage.height;
+
+    ctx.drawImage(newImage, 0, 0);
+
+    const croppedCanvas = document.createElement("canvas");
+    const croppedCtx = croppedCanvas.getContext("2d");
+    
+    if (!croppedCtx) {
+      return;
+    }
+
+    croppedCanvas.width = pixelCrop.width;
+    croppedCanvas.height = pixelCrop.height;
+
+    croppedCtx.drawImage(
+      canvas,
+      pixelCrop.x,
+      pixelCrop.y,
+      pixelCrop.width,
+      pixelCrop.height,
+      0,
+      0,
+      pixelCrop.width,
+      pixelCrop.height
+    );
+
+    console.log(croppedCanvas);
+    console.log("getCroppedImg", croppedCanvas.toDataURL("image/png"));
+
+    return croppedCanvas.toDataURL("image/png");
+  };
+
+  async function onFinished() {
+    const cropped = await getCroppedImg(image, croppedAreaPixels);
+
+    console.log("onFinished", cropped);
+
+    if (!cropped) {
+      return;
+    }
+
+    onFinishedCropping(cropped);
   }
 
   const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
-    const image = new Image();
-    const canvas = document.createElement("canvas");
-    canvas.width = croppedArea.width;
-    canvas.height = croppedArea.height;
+    setCroppedAreaPixels(croppedAreaPixels);
 
-    const ctx = canvas.getContext("2d");
-    if (ctx) {
-      ctx.drawImage(
-        image,
-        croppedArea.x,
-        croppedArea.y,
-        croppedArea.width,
-        croppedArea.height,
-        0,
-        0,
-        croppedArea.width,
-        croppedArea.height,
-      );
-      setPreview(canvas.toDataURL("image/png"));
-    }
+    // setPreview(croppedCanvas.toDataURL("image/png"));
   };
 
-  // const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
-  //   const canvas = document.createElement("canvas");
-  //   const image = new Image();
-  //   image.src = URL.createObjectURL(new Blob([croppedAreaPixels], { type: "image/png" }));
-
-  //   image.onload = () => {
-  //     const ctx = canvas.getContext("2d");
-  //     if (ctx) {
-  //       canvas.width = croppedArea.width;
-  //       canvas.height = croppedArea.height;
-  //       ctx.drawImage(image, 0, 0, croppedArea.width, croppedArea.height, 0, 0, croppedArea.width, croppedArea.height);
-  //       setPreview(canvas.toDataURL("image/png"));
-  //     }
-  //   };
-  // };
-
   return (
-    <div className="flex flex-col">
-      <div>
+    <div className="flex h-1/2 w-screen flex-col items-center">
+      <div className="relative h-80 w-1/2">
         <Cropper
-          classes={{ containerClassName: "mt-96 h-1/2" }}
           image={image}
           crop={crop}
           zoom={zoom}
@@ -74,23 +104,17 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
           onZoomChange={setZoom}
         />
       </div>
-      <div className="flex h-20 w-1/2 -translate-x-1/2 items-center self-center">
-        <input
-          type="range"
-          value={zoom}
-          min={1}
-          max={3}
-          step={0.1}
-          aria-labelledby="Zoom"
-          onChange={(e) => setZoom(Number(e.target.value))}
-          className="px-6 py-0"
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={preview} alt="Preview" />
-      </div>
-
-      <div className="flex items-center justify-center">
-      </div>
+      <input
+        type="range"
+        value={zoom}
+        min={1}
+        max={3}
+        step={0.1}
+        aria-labelledby="Zoom"
+        onChange={(e) => setZoom(Number(e.target.value))}
+        className="px-6 py-0"
+      />
+      <button onClick={() => void onFinished()}>Crop</button>
     </div>
   );
 };
