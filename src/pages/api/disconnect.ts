@@ -12,7 +12,8 @@ export default function handler(
 ) {
   console.log("body", req.body);
   console.log("query", req.query);
-  console.log("full", req);
+  //   console.log("full", req);
+  console.log("full", req.headers);
   res.status(200).json({
     message: JSON.stringify(req.body),
     // message_dos: JSON.stringify(req.query),
