@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, type FC } from "react";
 import Cropper from "react-easy-crop";
 import { type Point, type Area } from "react-easy-crop/types";
 
@@ -8,7 +8,7 @@ interface ImageCropperProps {
   onFinishedCropping: (arg0: string) => void;
 }
 
-const ImageCropper: React.FC<ImageCropperProps> = ({
+const ImageCropper: FC<ImageCropperProps> = ({
   image,
   aspectRatio,
   onFinishedCropping,
@@ -85,14 +85,8 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     onFinishedCropping(cropped);
   }
 
-  const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-
-    // setPreview(croppedCanvas.toDataURL("image/png"));
-  };
-
   return (
-    <div className="flex h-1/2 w-screen flex-col items-center">
+    <div className="flex h-1/2 w-screen flex-col items-center gap-5">
       <div className="relative h-80 w-1/2">
         <Cropper
           image={image}
@@ -100,7 +94,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
           zoom={zoom}
           aspect={aspectRatio}
           onCropChange={setCrop}
-          onCropComplete={onCropComplete}
+          onCropComplete={(_croppedArea: Area, croppedAreaPixels: Area) => setCroppedAreaPixels(croppedAreaPixels)}
           onZoomChange={setZoom}
         />
       </div>
@@ -114,7 +108,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
         onChange={(e) => setZoom(Number(e.target.value))}
         className="px-6 py-0"
       />
-      <button onClick={() => void onFinished()}>Crop</button>
+      <button className="rounded-lg bg-slate-200 px-5 py-2" onClick={() => void onFinished()}>Crop</button>
     </div>
   );
 };
