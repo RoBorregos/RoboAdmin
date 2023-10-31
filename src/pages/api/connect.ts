@@ -10,7 +10,7 @@ type ResponseData = {
   //   message_full: string;
 };
 
-export default async function handler(
+export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>,
 ) {
