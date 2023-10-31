@@ -21,24 +21,24 @@ export default async function handler(
   // get connectionId from headers (instead of "connectionId" from headers)
   const id = req.headers.connectionid as string;
   console.log("connectionId", id);
-  if (!id) {
-    res.status(400).json({
-      message: "No message provided",
-    });
-  }
-  const apiGatewayClient = new ApiGatewayManagementApiClient({
-    // apiVersion: "2018-11-29",
-    endpoint: "https://0dgey6d1uf.execute-api.us-east-1.amazonaws.com/develop",
-  });
-  const postToConnectionCommand = new PostToConnectionCommand({
-    ConnectionId: id,
-    Data: JSON.stringify({
-      action: "message",
-      content: id,
-    }),
-  });
+  //   if (!id) {
+  //     res.status(400).json({
+  //       message: "No message provided",
+  //     });
+  //   }
+  //   const apiGatewayClient = new ApiGatewayManagementApiClient({
+  //     // apiVersion: "2018-11-29",
+  //     endpoint: "https://0dgey6d1uf.execute-api.us-east-1.amazonaws.com/develop",
+  //   });
+  //   const postToConnectionCommand = new PostToConnectionCommand({
+  //     ConnectionId: id,
+  //     Data: JSON.stringify({
+  //       action: "message",
+  //       content: id,
+  //     }),
+  //   });
 
-  const result = await apiGatewayClient.send(postToConnectionCommand);
+  //   const result = await apiGatewayClient.send(postToConnectionCommand);
   res.status(200).json({
     message: JSON.stringify(req.body),
     // message_dos: JSON.stringify(req.query),
