@@ -14,10 +14,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>,
 ) {
-  console.log("body", req.body);
-  console.log("query", req.query);
+  //   console.log("body", req.body);
+  //   console.log("query", req.query);
   //   console.log("full", req);
-  console.log("headers keys", Object.keys(req.headers));
+  //   console.log("headers keys", Object.keys(req.headers));
   // get connectionId from headers (instead of "connectionId" from headers)
   const id = req.headers.connectionid as string;
   console.log("connectionId", id);
