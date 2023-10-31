@@ -19,7 +19,7 @@ export default async function handler(
   //   console.log("full", req);
   console.log("headers keys", Object.keys(req.headers));
   // get connectionId from headers (instead of "connectionId" from headers)
-  const id = req.headers.connectionId as string;
+  const id = req.headers.connectionid as string;
   if (!id) {
     res.status(400).json({
       message: "No message provided",
