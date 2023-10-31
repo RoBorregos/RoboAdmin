@@ -1,5 +1,5 @@
 import { useState } from "react";
-import EditUserModal from "./memberModal";
+import EditUserModal from "./modal";
 
 const EditUser = () => {
     const [cell, setCell] = useState(true);
