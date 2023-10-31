@@ -3,6 +3,7 @@ import {
   ApiGatewayManagementApiClient,
   PostToConnectionCommand,
 } from "@aws-sdk/client-apigatewaymanagementapi";
+import axios from "axios";
 
 type ResponseData = {
   message: string;
@@ -10,7 +11,7 @@ type ResponseData = {
   //   message_full: string;
 };
 
-export default async function handler(
+export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>,
 ) {
@@ -22,20 +23,10 @@ export default async function handler(
   const id = req.headers.connectionid as string;
   if (id) {
     console.log("connectionId", id);
-    const apiGatewayClient = new ApiGatewayManagementApiClient({
-      // apiVersion: "2018-11-29",
-      endpoint:
-        "https://0dgey6d1uf.execute-api.us-east-1.amazonaws.com/develop",
+    void axios.post("/api/testSend", {
+      message: id.split(",")[1],
+      connectionId: id,
     });
-    const postToConnectionCommand = new PostToConnectionCommand({
-      ConnectionId: id.split(",")[0],
-      Data: JSON.stringify({
-        action: "message",
-        content: id,
-      }),
-    });
-
-    const result = await apiGatewayClient.send(postToConnectionCommand);
   }
   //   if (!id) {
   //     res.status(400).json({
