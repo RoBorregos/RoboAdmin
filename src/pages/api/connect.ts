@@ -19,16 +19,16 @@ export default async function handler(
   //   console.log("full", req);
   //   console.log("headers keys", Object.keys(req.headers));
   // get connectionId from headers (instead of "connectionId" from headers)
-  const id = req.headers.connectionid;
-  if (id && id?.length > 0) {
-    console.log("connectionId", id[0]);
+  const id = req.headers.connectionid as string;
+  if (id) {
+    console.log("connectionId", id);
     const apiGatewayClient = new ApiGatewayManagementApiClient({
       // apiVersion: "2018-11-29",
       endpoint:
         "https://0dgey6d1uf.execute-api.us-east-1.amazonaws.com/develop",
     });
     const postToConnectionCommand = new PostToConnectionCommand({
-      ConnectionId: id[0],
+      ConnectionId: id.split(",")[0],
       Data: JSON.stringify({
         action: "message",
         content: id,
