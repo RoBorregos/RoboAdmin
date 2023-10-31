@@ -18,7 +18,7 @@ export default async function handler(
   console.log("query", req.query);
   //   console.log("full", req);
   console.log("full", req.headers.connectionId);
-  const id = req.headers.connectionId as string;
+  const id = req.headers["connectionId"] as string;
   if (!id) {
     res.status(400).json({
       message: "No message provided",
