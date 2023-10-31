@@ -24,7 +24,7 @@ export default function handler(
   if (id) {
     console.log("connectionId", id);
     void axios.post("/api/testSend", {
-      message: id.split(",")[1],
+      message: id.split(",")[0],
       connectionId: id,
     });
   }
