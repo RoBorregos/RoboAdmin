@@ -30,15 +30,16 @@ interface FormValues {
 
 const Edit: React.FC<EditProps> = ({ handleClick, data, image, add }) => {
     const addMember = api.members.addMember.useMutation();
-    const handleSubmit = (values: FormValues) => {
-        console.log(values);
-    }
+    const updateMember = api.members.updateMember.useMutation();
+    const last = api.members.getLastMember.useQuery().data;
+
 
     const handleEdit = (values: FormValues) => {
         if (values) {
             if (add) {
+                const prevId = last?.id || 0;
                 addMember.mutate({
-                    id: data?.id || 0,
+                    id: prevId + 1 || 0,
                     name: values.name || "",
                     lastname: values.lastname || "",
                     role: values.role || "",
@@ -54,7 +55,21 @@ const Edit: React.FC<EditProps> = ({ handleClick, data, image, add }) => {
                     image: image || "",
                 });
             } else {
-
+                updateMember.mutate({
+                    id: data?.id || 0,
+                    name: values.name || "",
+                    lastname: values.lastname || "",
+                    role: values.role || "",
+                    subtitle: values.subtitle || "",
+                    class: values.class || "",
+                    semesters: values.semesters || "",
+                    status: values.status || "",
+                    description: values.description || "",
+                    github: values.github || "",
+                    github_user: values.github_user || "",
+                    linkedin: values.linkedin || "",
+                    tags: values.tags || "",
+                });
             }
         }
     }

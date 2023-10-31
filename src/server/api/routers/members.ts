@@ -75,6 +75,25 @@ export const membersRouter = createTRPCRouter({
     getMembers: publicProcedure
         .query(({ ctx }) => {
             return ctx.db.member.findMany({
+                select: {
+                    id: true,
+                    name: true,
+                    lastname: true,
+                    role: true,
+                    subtitle: true,
+                    class: true,
+                    semesters: true,
+                    status: true,
+                    description: true,
+                    github: true,
+                    github_user: true,
+                    linkedin: true,
+                    tags: true,
+                    image: true
+                },
+                orderBy: {
+                    id: "asc"
+                }
         })
     })
 

@@ -1,7 +1,7 @@
 type Member = {
     id: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
     name: string;
     lastname: string;
     status: string;

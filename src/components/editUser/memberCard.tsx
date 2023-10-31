@@ -10,13 +10,14 @@ interface MemberCardProps {
 const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
     const addMember = api.members.addMember.useMutation();
 
-    const [image, setImage] = useState('');
+    // const [image, setImage] = useState('');
     const name = member.name + " " + member.lastname;
-
+    const image = `https://raw.githubusercontent.com/RoBorregos/roborregos-web/develop/src/images/members/${member.id}.jpg`;
+    
     const fetchData = async () => {
         const response = await fetch(`https://raw.githubusercontent.com/RoBorregos/roborregos-web/develop/src/images/members/${member.id}.jpg`);
         // const data = await response.json();
-        setImage(response.url);
+        // setImage(response.url);
 
         // if (member !== undefined) {
         //         const str = `https://raw.githubusercontent.com/RoBorregos/roborregos-web/develop/src/images/members/${member.id}.jpg`;
@@ -46,7 +47,7 @@ const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
         //     }
         // console.log(response.url);
     }
-    fetchData();
+    // fetchData();
 
     const [openModal, setOpenModal] = useState(false);
 

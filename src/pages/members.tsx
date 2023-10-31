@@ -3,14 +3,14 @@ import MemberCard from "rbrgs/components/editUser/memberCard";
 import SearchBar from "rbrgs/components/editUser/searchBar";
 import { useEffect, useState } from "react";
 import { api } from "rbrgs/utils/api";
+import SaveChanges from "rbrgs/components/editUser/saveChanges";
 
 const Members = () => {
-    const addMember = api.members.addMember.useMutation();
     const getMembers = api.members.getMembers.useQuery();
 
 
     const [members, setMembers] = useState([]);
-    const last = api.members.getLastMember.useQuery();
+    
     // console.log(last.data);
 
     const fetchData = async () => {
@@ -70,6 +70,7 @@ const Members = () => {
             <div className="flex">
                 <SearchBar />
                 <AddMember id="msm"/>
+                <SaveChanges />
             </div>
 
             <div className="grid grid-cols-6 md:grid-cols-7 gap-2 mt-4">
