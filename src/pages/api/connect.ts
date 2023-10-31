@@ -40,7 +40,7 @@ export default function handler(
 
   //   const result = await apiGatewayClient.send(postToConnectionCommand);
   res.status(200).json({
-    message: JSON.stringify(req.body),
+    message: id,
     // message_dos: JSON.stringify(req.query),
     // message_full: JSON.stringify(req),
   });
