@@ -14,7 +14,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>,
 ) {
-  const { message, connectionId } = req.body;
+  const { message, connectionId } = req.body as {
+    message: string;
+    connectionId: string;
+  };
   if (!message) {
     res.status(400).json({
       message: "No message provided",
