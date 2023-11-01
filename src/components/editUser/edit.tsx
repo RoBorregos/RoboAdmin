@@ -24,7 +24,7 @@ interface FormValues {
     github_user: string,
     linkedin: string,
     tags: string,
-    
+
 
 }
 
@@ -33,13 +33,14 @@ const Edit: React.FC<EditProps> = ({ handleClick, data, image, add }) => {
     const updateMember = api.members.updateMember.useMutation();
     const last = api.members.getLastMember.useQuery().data;
 
-
     const handleEdit = (values: FormValues) => {
         if (values) {
             if (add) {
                 const prevId = last?.id || 0;
+                const newId = prevId + 1;
+                const img = `https://raw.githubusercontent.com/RoBorregos/roborregos-web/develop/src/images/members/${newId}.jpg`;
                 addMember.mutate({
-                    id: prevId + 1 || 0,
+                    id: newId || 0,
                     name: values.name || "",
                     lastname: values.lastname || "",
                     role: values.role || "",
@@ -52,9 +53,10 @@ const Edit: React.FC<EditProps> = ({ handleClick, data, image, add }) => {
                     github_user: values.github_user || "",
                     linkedin: values.linkedin || "",
                     tags: values.tags || "",
-                    image: image || "",
+                    image: img,
                 });
             } else {
+                
                 updateMember.mutate({
                     id: data?.id || 0,
                     name: values.name || "",
@@ -70,13 +72,14 @@ const Edit: React.FC<EditProps> = ({ handleClick, data, image, add }) => {
                     linkedin: values.linkedin || "",
                     tags: values.tags || "",
                 });
+                
             }
         }
     }
 
     return (
         <div className="h-full w-full p-6 overflow-scroll">
-            <Name name={data?.name || ""} lastname={data?.lastname || ""}/>
+            <Name name={data?.name || ""} lastname={data?.lastname || ""} />
             <Formik
                 initialValues={{
                     name: data?.name,
@@ -96,7 +99,7 @@ const Edit: React.FC<EditProps> = ({ handleClick, data, image, add }) => {
                 onSubmit={(values, actions) => {
                     handleEdit(values as FormValues);
                     setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
+                        alert("Updated");
                         actions.setSubmitting(false);
                     }, 1000);
                 }}
@@ -104,12 +107,11 @@ const Edit: React.FC<EditProps> = ({ handleClick, data, image, add }) => {
 
                 <Form>
                     <div className="flex flex-col gap-3">
-                        {add && (
-                            <div className="flex flex-col gap-3">
-                                <Input title="Name" id={"name"} data="" />
-                                <Input title="Last name" id={"lastName"} data="" />
-                            </div>
-                        )}
+
+                        {/* <div className="flex flex-col gap-3"> */}
+                        <Input title="Name" id={"name"} data="" />
+                        <Input title="Last name" id={"lastName"} data="" />
+
                         <Input title="Role" id={"role"} data={data?.role || ""} />
                         <Input title="Subtitle" id={"subtitle"} data={data?.subtitle || ""} />
                         <Input title="Class" id={"class"} data={data?.class || ""} />

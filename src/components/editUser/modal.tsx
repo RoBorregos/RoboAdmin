@@ -64,7 +64,6 @@ const Modal: React.FC<Props> = ({ data, isOpen, image }) => {
                             
                             ) : (
                                 <Edit handleClick={() => toggleVariant()} data={data} image={image} />
-                                // <AuthForm onSubmit={() => toggleVariant()} userId={userId || "-1"} />
                                 )}
 
                     </div>

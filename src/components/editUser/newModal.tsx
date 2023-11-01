@@ -6,12 +6,14 @@ import Edit from "./edit";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import Image from "next/image";
 import MainButtons from "./toggle";
+import AddImage from "./addImage";
+import { api } from "rbrgs/utils/api";
 
 interface Props {
     isOpen: boolean;
 }
 
-type Variant = "EDIT" | "VIEW";
+type Variant = "EDIT" | "IMAGE";
 
 const NewMemberModal: React.FC<Props> = ({ isOpen }) => {
     const dialog = useRef<HTMLDialogElement>(null);
@@ -24,17 +26,18 @@ const NewMemberModal: React.FC<Props> = ({ isOpen }) => {
     // },[])
 
     const [open, setOpen] = useState(isOpen);
-    const [variant, setVariant] = useState<Variant>("VIEW");
+    const [variant, setVariant] = useState<Variant>("IMAGE");
+    const last = api.members.getLastMember.useQuery().data;
 
     const handleClick = () => {
         console.log("clicked");
     }
 
     const toggleVariant = useCallback(() => {
-        if (variant == 'VIEW') {
+        if (variant == 'IMAGE') {
             setVariant('EDIT');
         } else {
-            setVariant('VIEW');
+            setVariant('IMAGE');
         }
     }, [variant]);
 
@@ -67,9 +70,14 @@ const NewMemberModal: React.FC<Props> = ({ isOpen }) => {
                 <div>
 
                     <div>
-           
-
-                    <Edit handleClick={handleClick} add />
+                    <MainButtons variant={variant} onClick={toggleVariant} image/>
+                            {variant == 'IMAGE' ? (
+                                <AddImage id={last?.id || 0}/>
+                            
+                            ) : (
+                                <Edit handleClick={handleClick} add />
+                                )}
+                    
 
                     </div>
                     

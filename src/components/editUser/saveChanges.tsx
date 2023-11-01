@@ -22,6 +22,7 @@ interface SaveProps {
 
 }
 const SaveModal: React.FC<SaveProps> = ({ isOpen }) => {
+    const update = api.githubApi.updateFileFromBranch.useMutation();
     // const dialog = document.getElementById(
     //     "111."
     // ) as HTMLDialogElement;
@@ -32,7 +33,18 @@ const SaveModal: React.FC<SaveProps> = ({ isOpen }) => {
         
         const jsonRes = JSON.stringify(data.data);
         // console.log(jsonRes)
+        const res = update.mutate({
+            owner: "RoBorregos",
+            repo: "roborregos-web",
+            branch: "update/members",
+            filePath: `src/data/members.json`,
+            fileContent: jsonRes,
+            commitMessage: "Update members",
+            token: "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"
+
+        })
         console.log("save");
+        alert("Saved");
     }
 
     useEffect(() => {
