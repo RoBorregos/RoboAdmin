@@ -97,6 +97,16 @@ export const membersRouter = createTRPCRouter({
             })
         }),
 
+    deleteMember: publicProcedure
+        .input(z.number())
+        .mutation(({ input, ctx }) => {
+            return ctx.db.member.delete({
+                where: {
+                    id: input
+                }        
+            })
+    }),
+
     getFilteredMembers: publicProcedure
         .input(
             z.string())

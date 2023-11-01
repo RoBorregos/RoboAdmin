@@ -63,13 +63,18 @@ const SaveModal: React.FC<SaveProps> = ({ isOpen }) => {
             }
         >
             <div>
-                <button onClick={() => dialog.current?.close()} className="bg-slate-400 p-2 rounded-md text-white  ml-5 h-8 align hover:bg-blue-500">
-                    Cancel
-                </button>
+            <div className="text-white mb-4 pr-10">
+                    Are you sure you want to delete the member?
+                </div>
+                <div className="flex">
+                    <button onClick={() => dialog.current?.close()} className="bg-slate-400 p-2 flex rounded-md justify-center text-white hover:bg-slate-300">
+                        Cancel
+                    </button>
 
-                <button onClick={() => handleSave()} className="bg-blue-400 p-2 rounded-md text-white items-center ml-5 justify-center h-8 text-center hover:bg-blue-500">
-                    Save All
-                </button>
+                    <button onClick={() => handleSave()} className="bg-blue-500 p-2 text-white rounded-md  items-center ml-5 ounded-md justify-center text-center hover:bg-blue-400">
+                        Save
+                    </button>
+                </div>
                 <button className="absolute p-2 right-3 top-3 text-white" onClick={() => dialog.current?.close()}>
                     <AiOutlineCloseCircle className="text-2xl" />
                 </button>

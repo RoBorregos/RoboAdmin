@@ -11,9 +11,9 @@ const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
     const addMember = api.members.addMember.useMutation();
 
     // const [image, setImage] = useState('');
-    const name = member.name + " " + member.lastname;
+    const name = member.name + " " + member.lastname.split(" ",1);
     const image = `https://raw.githubusercontent.com/RoBorregos/roborregos-web/develop/src/images/members/${member.id}.jpg`;
-    
+
     const fetchData = async () => {
         const response = await fetch(`https://raw.githubusercontent.com/RoBorregos/roborregos-web/develop/src/images/members/${member.id}.jpg`);
         // const data = await response.json();
@@ -21,7 +21,7 @@ const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
 
         // if (member !== undefined) {
         //         const str = `https://raw.githubusercontent.com/RoBorregos/roborregos-web/develop/src/images/members/${member.id}.jpg`;
-                
+
         //         const def: Member = member;
         //         const id = def.id;
         //         const idNum = parseInt(id.toString());
@@ -41,15 +41,16 @@ const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
         //         linkedin: def.linkedin || "",
         //         tags: def.tags || "",
         //         image: str,
-                    
+
         //         })
-                
+
         //     }
         // console.log(response.url);
     }
     // fetchData();
 
     const [openModal, setOpenModal] = useState(false);
+    
 
 
     return (
@@ -58,11 +59,11 @@ const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
                 <div className="w-52 absolute overflow-clip text-white z-40 p-2 bottom-1 drop-shadow-2xl [text-shadow:_0_3px_3px_rgb(0_0_0_/_60%)]">
                     {name}
                 </div>
-                <div className="opacity-80 bg-black object-cover ">
-                    <Image className="" src={image} alt={member.name} width={200} height={200} />
+                <div className="opacity-80 bg-black object-contain  ">
+                    <Image className="justify-normal" src={image} alt={member.name} width={200} height={200} />
                 </div>
             </div>
-            <Modal data={member} isOpen={openModal} image={image}/>
+            <Modal data={member} isOpen={openModal} image={image} />
         </div>
     )
 }

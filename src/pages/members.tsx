@@ -81,7 +81,7 @@ const Members = () => {
 
     return (
 
-        <div className="p-5 bg-stone-900">
+        <div className="p-5 bg-stone-900 h-max">
             <h1 className="text-2xl py-3 text-slate-100">
                 Members
             </h1>
@@ -104,26 +104,19 @@ const Members = () => {
     );
 }
 
-const Container = ({ search }: { search: string }) => {
-    return (
-        <div className="bg-slate-900">
-            <Members />
-        </div>
-    )
-}
 
 const SearchContainer = ({ search }: { search: string }) => {
     const { data: members, isLoading } = api.members.getFilteredMembers.useQuery(search);
-    console.log(members);
-    
+    // console.log(members);
+
     if (isLoading) {
         return <p>Cargando...</p>;
-      } else if (!members || members.length === 0) {
+    } else if (!members || members.length === 0) {
         return <p className="text-black">No se encontraron resultados</p>;
     }
 
     return (
-        <div className="grid grid-cols-6 md:grid-cols-7 gap-2 mt-4">
+        <div className="h-screen overflow-scroll grid grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-2 mt-4">
             {members && (
                 members.map((member, key) => (
                     <MemberCard key={key} member={member} />
