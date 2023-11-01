@@ -34,48 +34,6 @@ const ImageCropper: FC<ImageCropperProps> = ({
       newImage.src = url;
     });
 
-/*   const getCroppedImg = async (imageSrc: string, pixelCrop: Area) => {
-    const newImage = await createImage(imageSrc);
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    
-    if (!ctx || !newImage) {
-      return;
-    }
-
-    canvas.width = newImage.width;
-    canvas.height = newImage.height;
-
-    ctx.drawImage(newImage, 0, 0);
-
-    const croppedCanvas = document.createElement("canvas");
-    const croppedCtx = croppedCanvas.getContext("2d");
-    
-    if (!croppedCtx) {
-      return;
-    }
-
-    croppedCanvas.width = pixelCrop.width;
-    croppedCanvas.height = pixelCrop.height;
-
-    croppedCtx.drawImage(
-      canvas,
-      pixelCrop.x,
-      pixelCrop.y,
-      pixelCrop.width,
-      pixelCrop.height,
-      0,
-      0,
-      pixelCrop.width,
-      pixelCrop.height
-    );
-
-    console.log(croppedCanvas);
-    console.log("getCroppedImg", croppedCanvas.toDataURL("image/png"));
-
-    return croppedCanvas.toDataURL("image/png");
-  }; */
-
   const getCroppedImg = async (imageSrc: string, pixelCrop: Area, desiredWidth: number, desiredHeight: number) => {
     const newImage = await createImage(imageSrc);
     const canvas = document.createElement("canvas");
