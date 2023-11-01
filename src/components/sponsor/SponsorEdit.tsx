@@ -14,7 +14,6 @@ export const SponsorEdit = ({
   sponsor: RouterOutputs["sponsor"]["getSponsorById"] | undefined | null;
 }) => {
   const context = api.useContext();
-  const router = useRouter();
 
   const mutationModify = api.sponsor.createOrUpdateSponsor.useMutation({
     onSuccess: (succeeded) => {
@@ -24,9 +23,8 @@ export const SponsorEdit = ({
         alert(
           "Sponsor " + (sponsor?.id ? "updated" : "created") + " successfully!",
         );
-        void context.sponsor.getSponsorById.invalidate({ id: sponsor?.id });
+        void context.sponsor.getSponsorsIds.invalidate();
       }
-      router.reload();
     },
     onError: (error) => {
       alert(error);
@@ -39,9 +37,8 @@ export const SponsorEdit = ({
         alert("Sponsor deletion failed.");
       } else {
         alert("Sponsor was deleted successfully!");
-        void context.sponsor.getSponsorById.invalidate({ id: sponsor?.id });
+        void context.sponsor.getSponsorsIds.invalidate();
       }
-      router.reload();
     },
     onError: (error) => {
       alert(error);
@@ -54,6 +51,7 @@ export const SponsorEdit = ({
         sponsorName: sponsor?.name ?? "",
         sponsorImg_path: sponsor?.img_path ?? "",
         sponsorUrl: sponsor?.url ?? "",
+        sponsorOrder: sponsor?.order ?? 100,
       }}
       onSubmit={(values) => {
         mutationModify.mutate({
@@ -61,6 +59,7 @@ export const SponsorEdit = ({
           img_path: values.sponsorImg_path,
           url: values.sponsorUrl,
           id: sponsor?.id,
+          order: values.sponsorOrder,
         });
       }}
       validationSchema={sponsorSchema}
@@ -83,6 +82,26 @@ export const SponsorEdit = ({
                 <ErrorMessage
                   component="a"
                   name="sponsorName"
+                  className={classNameError}
+                />
+              </div>
+            </div>
+            <div className="my-2">
+              <div className="flex flex-row flex-wrap align-middle">
+                <label htmlFor="sponsorOrder" className={classNameLabel}>
+                  Sponsor Order:
+                </label>
+                <Field
+                  id="sponsorOrder"
+                  name="sponsorOrder"
+                  type="number"
+                  className={classNameField}
+                />
+              </div>
+              <div className="my-4">
+                <ErrorMessage
+                  component="a"
+                  name="sponsorOrder"
                   className={classNameError}
                 />
               </div>

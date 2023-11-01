@@ -11,6 +11,9 @@ export const generateSponsorsJson = async ({ db }: { db: DB }) => {
       img_path: true,
       url: true,
     },
+    orderBy: {
+      order: "asc",
+    },
   });
 
   const packagesInfoDb = await db.sponsorPack.findMany({
@@ -22,6 +25,9 @@ export const generateSponsorsJson = async ({ db }: { db: DB }) => {
           enDescription: true,
         },
       },
+    },
+    orderBy: {
+      order: "asc",
     },
   });
 

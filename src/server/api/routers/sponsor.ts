@@ -1,8 +1,11 @@
 import { z } from "zod";
 import { SponsorsInfo } from "rbrgs/utils/jsonread";
 import { SponsorModel, SponsorPackModel } from "rbrgs/zod/types";
+import { jsonSponsorFormat } from "rbrgs/zod/types";
 
 import { generateSponsorsJson } from "rbrgs/utils/jsongen";
+
+import { cleanSponsorHistory } from "rbrgs/server/api/routers/historyUtils";
 
 import {
   createTRPCRouter,
@@ -25,6 +28,9 @@ export const sponsorRouter = createTRPCRouter({
           ],
         },
         select: { id: true },
+        orderBy: {
+          order: "asc",
+        },
       });
     }),
   getSponsorById: publicProcedure
@@ -116,6 +122,9 @@ export const sponsorRouter = createTRPCRouter({
         select: {
           id: true,
         },
+        orderBy: {
+          order: "asc",
+        },
       });
     }),
 
@@ -132,9 +141,10 @@ export const sponsorRouter = createTRPCRouter({
               enDescription: true,
               esDescription: true,
               id: true,
+              order: true,
             },
             orderBy: {
-              enDescription: "asc",
+              order: "asc",
             },
           },
         },
@@ -151,12 +161,14 @@ export const sponsorRouter = createTRPCRouter({
           },
           update: {
             name: input.name,
+            order: input.order,
             benefits: {
               deleteMany: {},
               create: input.items,
             },
           },
           create: {
+            order: input.order,
             name: input.name,
             benefits: {
               create: input.items,
@@ -180,6 +192,9 @@ export const sponsorRouter = createTRPCRouter({
           esDescription: { contains: input.search ?? "", mode: "insensitive" },
         },
         select: { id: true },
+        orderBy: {
+          order: "asc",
+        },
       });
     }),
 
@@ -199,7 +214,7 @@ export const sponsorRouter = createTRPCRouter({
 
   // Get sponsors from the provided url and update the sponsors
   // information in the database. Save a copy of the previous sponsors
-  fetchSponsors: publicProcedure
+  fetchSponsors: protectedProcedure
     .input(z.object({ url: z.string().optional().nullable() }))
     .mutation(async ({ input, ctx }) => {
       const sponsorInfo = input?.url
@@ -222,7 +237,7 @@ export const sponsorRouter = createTRPCRouter({
               await prisma.sponsorHistory.create({
                 data: {
                   json: prevJson,
-                  userId: ctx.session?.user?.id ?? "",
+                  userId: ctx.session.user.id,
                 },
               });
             }
@@ -256,23 +271,86 @@ export const sponsorRouter = createTRPCRouter({
             }
 
             // Maintain only the last 15 history elements
-            const maintainItems = await prisma.sponsorHistory.findMany({
-              orderBy: {
-                createdAt: "desc",
-              },
-              select: {
-                id: true,
-              },
-              take: 15,
-            });
+            await cleanSponsorHistory({ db: prisma });
+          },
+          {
+            timeout: 10000,
+          },
+        );
 
-            await prisma.sponsorHistory.deleteMany({
-              where: {
-                id: {
-                  notIn: maintainItems.map((item) => item.id),
+        return true;
+      } catch (err) {
+        console.log("Error: ", err);
+        return false;
+      }
+    }),
+
+  restoreJson: protectedProcedure
+    .input(z.object({ historyId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      // Fetch json
+      const json = await ctx.db.sponsorHistory.findUnique({
+        where: {
+          id: input.historyId,
+        },
+        select: {
+          json: true,
+        },
+      });
+
+      if (!json) {
+        return "No se encontró el elemento en el historial";
+      }
+
+      // Parse json
+      try {
+        // Save current db elements into history and delete all current elements
+        const sponsorInfo = jsonSponsorFormat.parse(JSON.parse(json.json));
+
+        await ctx.db.$transaction(
+          async (prisma) => {
+            const prevJson = await generateSponsorsJson({ db: ctx.db });
+
+            // Only add the previous json if it is valid
+            if (typeof prevJson === "string") {
+              await prisma.sponsorHistory.create({
+                data: {
+                  json: prevJson,
+                  userId: ctx.session.user.id,
                 },
-              },
-            });
+              });
+            }
+
+            await prisma.benefits.deleteMany({});
+            await prisma.sponsor.deleteMany({});
+            await prisma.sponsorPack.deleteMany({});
+
+            for (const sponsor of sponsorInfo.sponsors) {
+              await prisma.sponsor.create({
+                data: {
+                  name: sponsor.name,
+                  url: sponsor.link,
+                  img_path: sponsor.img_path,
+                },
+              });
+            }
+
+            for (const sponsorPackage of sponsorInfo.packages) {
+              await prisma.sponsorPack.create({
+                data: {
+                  name: sponsorPackage.name,
+                  benefits: {
+                    create: sponsorPackage.benefits.map((benefit) => ({
+                      enDescription: benefit.en,
+                      esDescription: benefit.es,
+                    })),
+                  },
+                },
+              });
+            }
+
+            // Maintain only the last 15 history elements
+            await cleanSponsorHistory({ db: prisma });
           },
           {
             timeout: 10000,
@@ -288,7 +366,7 @@ export const sponsorRouter = createTRPCRouter({
 
   // From the database, generate a json file with the sponsors information
   // and make a commit to the repository
-  postSponsors: publicProcedure.mutation(async ({ input, ctx }) => {}),
+  // postSponsors: publicProcedure.mutation(async ({ input, ctx }) => {}),
 
   // Get the history of the sponsors information
   getSponsorsHistory: publicProcedure

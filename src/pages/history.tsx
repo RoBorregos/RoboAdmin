@@ -70,7 +70,7 @@ const SponsorHistoryContainer = ({ search }: { search: string }) => {
   }
 
   return (
-    <div className="flex w-full flex-row flex-wrap justify-center">
+    <div className="flex w-full flex-row flex-wrap justify-center gap-x-2 gap-y-2">
       {sponsorsHistoryIds?.map((sponsorHId) => (
         <FetchSponsorHContainer key={sponsorHId.id} id={sponsorHId.id} />
       ))}

@@ -35,13 +35,23 @@ export const SponsorHistoryCard = ({
         className="m-2 rounded-md bg-blue-700 p-1 text-white text-base"
         onClick={() => {
           const newWindow = window.open('', '_blank');
-          const jsonObject = JSON.parse(sponsorHistory?.json ?? "{}");
+          const jsonObject: unknown = JSON.parse(sponsorHistory?.json ?? "{}");
           if (newWindow) {
             newWindow.document.write(`<pre>${JSON.stringify(jsonObject, null, 2)}</pre>`);
           }
         }}
       >
         Ver JSON
+      </button>
+      <button
+        className="m-2 rounded-md bg-blue-700 p-1 text-white text-base"
+        onClick={() => {
+          if (window.confirm("¿Estás seguro de que quieres restaurar esta versión?")) {
+
+          }
+        }}
+      >
+        Restablecer Versión
       </button>
     </a>
   );

@@ -1,5 +1,4 @@
 import React from "react";
-import { useRouter } from "next/router";
 import { Formik, Field, FieldArray, Form, ErrorMessage } from "formik";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import type { RouterOutputs } from "rbrgs/utils/api";
@@ -7,7 +6,7 @@ import { sponsorPackSchema } from "../schemas/sponsorPackSchema";
 import { api } from "rbrgs/utils/api";
 
 const classNameLabel = "text-lg mr-2 text-slate-800";
-const classNameField = "bg-slate-300 text-black text-base rounded-md";
+const classNameField = "bg-slate-300 text-black text-base rounded-md w-full";
 const classNameError = "bg-red-500 p-2 rounded-md text-white text-sm";
 
 export const SponsorPackForm = ({
@@ -19,7 +18,6 @@ export const SponsorPackForm = ({
     | null;
 }) => {
   const context = api.useContext();
-  const router = useRouter();
 
   const mutationModify = api.sponsor.createOrUpdateSponsorPack.useMutation({
     onSuccess: (succeeded) => {
@@ -29,9 +27,8 @@ export const SponsorPackForm = ({
         alert(
           "Sponsor " + (sponsorPack?.id ? "updated" : "created") + " successfully!",
         );
-        void context.sponsor.getSponsorById.invalidate({ id: sponsorPack?.id });
+        void context.sponsor.getSponsorPacksIds.invalidate();
       }
-      router.reload();
     },
     onError: (error) => {
       alert(error);
@@ -41,17 +38,18 @@ export const SponsorPackForm = ({
   let itemValues = sponsorPack?.benefits.map((benefit) => ({
     esDescription: benefit.esDescription,
     enDescription: benefit.enDescription,
+    benefitOrder: benefit.order,
   }));
 
   if (!itemValues || itemValues?.length === 0) {
     itemValues = [];
-    itemValues.push({ esDescription: "", enDescription: "" });
+    itemValues.push({ esDescription: "", enDescription: "", benefitOrder: 100 });
   }
 
   return (
     <div className="block max-w-sm overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
     <Formik
-      initialValues={{ items: itemValues, packageName: sponsorPack?.name ?? ""}}
+      initialValues={{ items: itemValues, packageName: sponsorPack?.name ?? "", packageOrder: sponsorPack?.order ?? 100}}
       onSubmit={(values) => {
         mutationModify.mutate({
           id: sponsorPack?.id,
@@ -59,7 +57,9 @@ export const SponsorPackForm = ({
           items: values.items.map((item) => ({
             esDescription: item.esDescription,
             enDescription: item.enDescription,
+            order: item.benefitOrder,
           })),
+          order: values.packageOrder,
         });
       }}
       validationSchema={sponsorPackSchema}
@@ -81,6 +81,26 @@ export const SponsorPackForm = ({
               <ErrorMessage
                 component="a"
                 name="packageName"
+                className={classNameError}
+              />
+            </div>
+          </div>
+          <div className="my-2">
+            <div className="flex flex-row flex-wrap align-middle">
+              <label htmlFor="packageOrder" className={classNameLabel}>
+                Order:
+              </label>
+              <Field
+                id="packageOrder"
+                name="packageOrder"
+                type="number"
+                className={classNameField}
+              />
+            </div>
+            <div className="my-4">
+              <ErrorMessage
+                component="a"
+                name="packageOrder"
                 className={classNameError}
               />
             </div>
@@ -136,12 +156,33 @@ export const SponsorPackForm = ({
                           />
                         </div>
                       </div>
+                      <div className="mt-2">
+                        <div className="flex flex-row flex-wrap gap-x-2 align-middle">
+                          <label
+                            htmlFor={`items.${index}.benefitOrder`}
+                            className={classNameLabel}
+                          >
+                            Order:
+                          </label>
+                          <Field
+                            type="number"
+                            id={`items.${index}.benefitOrder`}
+                            name={`items.${index}.benefitOrder`}
+                            className={classNameField}
+                          />
+                          <ErrorMessage
+                            component="a"
+                            name={`items.${index}.benefitOrder`}
+                            className={classNameError}
+                          />
+                        </div>
+                      </div>
                     </div>
                   ))}
                 <button
                   type="button"
                   className="ml-auto mr-auto w-fit rounded-md bg-blue-300 p-1 hover:bg-blue-500"
-                  onClick={() => push({ esDescription: "", enDescription: "" })}
+                  onClick={() => push({ esDescription: "", enDescription: "", order: 100 })}
                 >
                   Agregar beneficio
                 </button>

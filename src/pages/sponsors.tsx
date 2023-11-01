@@ -9,7 +9,7 @@ import { SponsorEdit } from "rbrgs/components/sponsor/SponsorEdit";
 import { SearchBar } from "rbrgs/components/general/SearchBar";
 import { SponsorPackWrapper } from "rbrgs/components/sponsorPacks/SponsorPackWrapper";
 import { SponsorPackForm } from "rbrgs/components/sponsor/SponsorPackForm";
-import { BiUpload, BiDownload, BiHistory, BiBroadcast } from "react-icons/bi";
+import { BiUpload, BiDownload } from "react-icons/bi";
 
 export default function SponsorsPage() {
   const [seeWindow, setSeeWindow] = useState("sponsors");
@@ -75,12 +75,6 @@ export default function SponsorsPage() {
             See Sponsor packs
           </button>
           <SearchBar setSearch={setSearch} className="w-80" />
-          <BiBroadcast
-            size={40}
-            color="gray"
-            className="rounded-full p-1 duration-1000 hover:bg-slate-300"
-            
-          />
         </div>
         <div className="mb-4 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-3 rounded-md bg-slate-300 p-2 duration-700 hover:bg-blue-400">
           <BiUpload size={30} className="duration-1000 hover:text-purple-800" />

@@ -6,6 +6,8 @@ export const sponsorPackSchema = Yup.object().shape({
     Yup.object().shape({
       esDescription: Yup.string().required('Spanish Description is required'),
       enDescription: Yup.string().required('English Description is required'),
+      benefitOrder: Yup.number().required('Order is required'),
     })
-  ),  
+  ),
+  packageOrder: Yup.number().required("Required"),
 });
