@@ -4,15 +4,18 @@ import { type Point, type Area } from "react-easy-crop/types";
 
 interface ImageCropperProps {
   image: string;
-  aspectRatio: number;
   onFinishedCropping: (arg0: string) => void;
+  desiredWidth: number;
+  desiredHeight: number;
 }
 
 const ImageCropper: FC<ImageCropperProps> = ({
   image,
-  aspectRatio,
   onFinishedCropping,
+  desiredWidth,
+  desiredHeight,
 }) => {
+  const aspectRatio = desiredWidth / desiredHeight; 
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area>({
@@ -31,7 +34,7 @@ const ImageCropper: FC<ImageCropperProps> = ({
       newImage.src = url;
     });
 
-  const getCroppedImg = async (imageSrc: string, pixelCrop: Area) => {
+/*   const getCroppedImg = async (imageSrc: string, pixelCrop: Area) => {
     const newImage = await createImage(imageSrc);
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -71,10 +74,53 @@ const ImageCropper: FC<ImageCropperProps> = ({
     console.log("getCroppedImg", croppedCanvas.toDataURL("image/png"));
 
     return croppedCanvas.toDataURL("image/png");
+  }; */
+
+  const getCroppedImg = async (imageSrc: string, pixelCrop: Area, desiredWidth: number, desiredHeight: number) => {
+    const newImage = await createImage(imageSrc);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    
+    if (!ctx || !newImage) {
+      return;
+    }
+  
+    canvas.width = newImage.width;
+    canvas.height = newImage.height;
+  
+    ctx.drawImage(newImage, 0, 0);
+  
+    const croppedCanvas = document.createElement("canvas");
+    const croppedCtx = croppedCanvas.getContext("2d");
+    
+    if (!croppedCtx) {
+      return;
+    }
+  
+    croppedCanvas.width = desiredWidth;
+    croppedCanvas.height = desiredHeight;
+  
+    croppedCtx.drawImage(
+      canvas,
+      pixelCrop.x,
+      pixelCrop.y,
+      pixelCrop.width,
+      pixelCrop.height,
+      0,
+      0,
+      desiredWidth,
+      desiredHeight
+    );
+  
+    console.log(croppedCanvas);
+    console.log("getCroppedImg", croppedCanvas.toDataURL("image/png"));
+  
+    return croppedCanvas.toDataURL("image/png");
   };
+  
 
   async function onFinished() {
-    const cropped = await getCroppedImg(image, croppedAreaPixels);
+    const cropped = await getCroppedImg(image, croppedAreaPixels, desiredWidth, desiredHeight);
 
     console.log("onFinished", cropped);
 

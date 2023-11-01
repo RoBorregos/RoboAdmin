@@ -18,7 +18,7 @@ const ImagesPage = () => {
       <ImageDrop handleFileSelect={handleFileSelect} />
       {selectedFile && (
         <div>
-          <ImagePreview image={URL.createObjectURL(selectedFile)} aspectRatio={10/3} onFinishedCropping={(image) => setCroppedImage(image)} />
+          <ImagePreview image={URL.createObjectURL(selectedFile)} onFinishedCropping={(image) => setCroppedImage(image)} desiredWidth={100} desiredHeight={200} />
         </div>
       )}
       {croppedImage && <img src={croppedImage} alt="" />}
