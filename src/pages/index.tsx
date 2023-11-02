@@ -6,8 +6,10 @@ import { useState } from "react";
 
 export default function Home() {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+
   const examples = api.test.test2.useQuery();
   const createExample = api.test.test1.useMutation();
+  
   const [input, setInput] = useState("");
   const util = api.useContext();
   return (
@@ -52,6 +54,8 @@ export default function Home() {
             </p>
             <AuthShowcase />
           </div>
+
+
           <input
             className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
             onChange={(e) => setInput(e.target.value)}
@@ -67,6 +71,7 @@ export default function Home() {
           >
             Create Example
           </button>
+
           <div className="flex flex-col items-center gap-2">
             {examples.data?.map((example) => (
               <p key={example.id} className="text-2xl text-white">
@@ -74,6 +79,7 @@ export default function Home() {
               </p>
             ))}
           </div>
+
         </div>
       </main>
     </>

@@ -6,6 +6,9 @@ import {
   publicProcedure,
 } from "rbrgs/server/api/trpc";
 
+
+
+
 export const testRouter = createTRPCRouter({
   test1: publicProcedure
     .input(
@@ -20,6 +23,7 @@ export const testRouter = createTRPCRouter({
         },
       });
     }),
+    
   test2: publicProcedure.query(async ({ ctx }) => {
     return await ctx.db.example.findMany();
   }),
