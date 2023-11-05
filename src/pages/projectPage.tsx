@@ -1,4 +1,4 @@
-import CardMainProject from "rbrgs/components/CardMainProject";
+import CardMainProject from "rbrgs/components/componentsProjects/CardMainProject";
 import React, { useState } from "react";
 import NavBar from "rbrgs/components/NavBar";
 import { api } from "rbrgs/utils/api";
