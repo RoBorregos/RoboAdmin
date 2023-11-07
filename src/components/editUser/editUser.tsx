@@ -1,5 +1,4 @@
 import { useState } from "react";
-import EditUserModal from "./modal";
 
 const EditUser = () => {
     const [cell, setCell] = useState(true);
@@ -9,7 +8,6 @@ const EditUser = () => {
             <button onClick={() => setCell(!cell)}>
                 open
             </button>
-            {/* <EditUserModal data =  isOpen={cell} /> */}
 
         </div>
     )

@@ -1,8 +1,9 @@
 import clsx from "clsx";
+import { IconType } from "react-icons";
 
 interface buttonProps {
     label: string;
-    icon: any;
+    icon: IconType;
     selected: boolean;
     onClick: () => void;
 }

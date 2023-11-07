@@ -2,10 +2,8 @@ import { useState } from "react";
 import ImageDrop from "../imgDrop";
 import ImagePreview from "../imgPreview";
 import { api } from "rbrgs/utils/api";
-interface Props {
-    id: number;
-}
-const AddImage: React.FC<Props> = ({ id }) => {
+
+const AddImage = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [croppedImage, setCroppedImage] = useState<string | null>(null);
     const addImg = api.githubApi.addFileToBranch.useMutation();

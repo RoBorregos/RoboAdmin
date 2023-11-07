@@ -43,7 +43,7 @@ const SaveModal: React.FC<SaveProps> = ({ isOpen }) => {
             token: "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"
 
         })
-        console.log("save");
+        console.log(res);
         alert("Saved");
     }
 

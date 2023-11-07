@@ -7,8 +7,7 @@ interface ViewProps {
     image: string;
 }
 
-const View: React.FC<ViewProps> = ({ handleClick, data, image }) => {
-
+const View: React.FC<ViewProps> = ({ data, image }) => {
 
 
     return (
@@ -16,16 +15,16 @@ const View: React.FC<ViewProps> = ({ handleClick, data, image }) => {
             <Name name={data.name} lastname={data.lastname}/>
             <div className="flex mb-4 w-full">
                 <div className="w-full flex flex-col gap-2">
-                    <Label title="Role" data={data.role || ""} />
-                    <Label title="Subtitle" data={data.subtitle || ""} />
-                    <Label title="Class" data={data.class || ""} />
-                    <Label title="Semesters" data={data.semesters || ""} />
+                    <Label title="Role" data={data.role ?? ""} />
+                    <Label title="Subtitle" data={data.subtitle ?? ""} />
+                    <Label title="Class" data={data.class ?? ""} />
+                    <Label title="Semesters" data={data.semesters ?? ""} />
                     <Label title="Status" data={data.status} />
-                    <Label title="Github User" data={data.github_user || ""} />
-                    <Label title="Description" data={data.description || ""} />
-                    <Label title="Github" data={data.github || ""} />
-                    <Label title="Linkedin" data={data.linkedin || ""} />
-                    <Label title="Tags" data={data.tags || ""} />
+                    <Label title="Github User" data={data.github_user ?? ""} />
+                    <Label title="Description" data={data.description ?? ""} />
+                    <Label title="Github" data={data.github ?? ""} />
+                    <Label title="Linkedin" data={data.linkedin ?? ""} />
+                    <Label title="Tags" data={data.tags ?? ""} />
                 </div>
 
                 <div className="absolute right-12 ">

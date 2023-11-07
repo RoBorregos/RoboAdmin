@@ -17,17 +17,7 @@ type Variant = "EDIT" | "IMAGE";
 
 const NewMemberModal: React.FC<Props> = ({ isOpen }) => {
     const dialog = useRef<HTMLDialogElement>(null);
-    // const dialog = document.getElementById("idd") as HTMLDialogElement || null;
-
-    // const [dialog, setDialog] = useState<HTMLDialogElement | null>(null);
-    // // setDialog(document.getElementById("idd") as HTMLDialogElement);
-    // useEffect(() => {
-    //     setDialog(document.getElementById("idd") as HTMLDialogElement);
-    // },[])
-
-    const [open, setOpen] = useState(isOpen);
     const [variant, setVariant] = useState<Variant>("IMAGE");
-    const last = api.members.getLastMember.useQuery().data;
 
     const handleClick = () => {
         console.log("clicked");
@@ -41,13 +31,6 @@ const NewMemberModal: React.FC<Props> = ({ isOpen }) => {
         }
     }, [variant]);
 
-    // useEffect(() => {
-    //     if (isOpen) {
-    //         setOpen(true);
-    //     } else {
-    //         setOpen(false);
-    //     }
-    // }, [isOpen]);
 
     useEffect(() => {
         if (dialog == null) return;
@@ -72,7 +55,7 @@ const NewMemberModal: React.FC<Props> = ({ isOpen }) => {
                     <div>
                     <MainButtons variant={variant} onClick={toggleVariant} image/>
                             {variant == 'IMAGE' ? (
-                                <AddImage id={last?.id || 0}/>
+                                <AddImage />
                             
                             ) : (
                                 <Edit handleClick={handleClick} add />

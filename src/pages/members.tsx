@@ -1,10 +1,9 @@
 import AddMember from "rbrgs/components/editUser/addMember";
 import MemberCard from "rbrgs/components/editUser/memberCard";
 import SearchBar from "rbrgs/components/editUser/searchBar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api } from "rbrgs/utils/api";
 import SaveChanges from "rbrgs/components/editUser/saveChanges";
-import { object, set } from "zod";
 
 const Members = () => {
     const { data: members } = api.members.getMembers.useQuery();
@@ -87,7 +86,7 @@ const Members = () => {
             </h1>
             <div className="flex">
                 <SearchBar handleSearch={handleSearch} />
-                <AddMember id="msm" />
+                <AddMember />
                 <SaveChanges />
             </div>
 
@@ -112,15 +111,17 @@ const SearchContainer = ({ search }: { search: string }) => {
     if (isLoading) {
         return <p>Cargando...</p>;
     } else if (!members || members.length === 0) {
-        return <p className="text-black">No se encontraron resultados</p>;
+        return <p className="text-white">No se encontraron resultados</p>;
     }
 
     return (
         <div className="h-screen overflow-scroll grid grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-2 mt-4">
             {members && (
-                members.map((member, key) => (
+                <>
+                {members.map((member, key) => (
                     <MemberCard key={key} member={member} />
-                ))
+                ))}
+                </>
             )}
         </div>
     )

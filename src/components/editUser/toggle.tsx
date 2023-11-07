@@ -1,6 +1,3 @@
-import { SlDocs } from 'react-icons/sl'
-import { BsChatRight } from 'react-icons/bs'
-import { useCallback, useState } from 'react'
 import Button from './buttons';
 import { AiOutlineEdit } from 'react-icons/ai'
 import { LiaPagerSolid } from 'react-icons/lia'

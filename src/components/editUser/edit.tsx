@@ -1,5 +1,4 @@
 import Input from "./input";
-import Label from "./label";
 import { Form, Formik } from 'formik';
 import Name from "./name";
 import { api } from "rbrgs/utils/api";
@@ -27,10 +26,9 @@ interface FormValues {
     linkedin: string,
     tags: string,
 
-
 }
 
-const Edit: React.FC<EditProps> = ({ handleClick, data, image, add }) => {
+const Edit: React.FC<EditProps> = ({ data, add }) => {
     const addMember = api.members.addMember.useMutation();
     const updateMember = api.members.updateMember.useMutation();
     const last = api.members.getLastMember.useQuery().data;
@@ -43,41 +41,41 @@ const Edit: React.FC<EditProps> = ({ handleClick, data, image, add }) => {
     const handleEdit = (values: FormValues) => {
         if (values) {
             if (add) {
-                const prevId = last?.id || 0;
+                const prevId = last?.id ?? 0;
                 const newId = prevId + 1;
                 const img = `https://raw.githubusercontent.com/RoBorregos/roborregos-web/develop/src/images/members/${newId}.jpg`;
                 addMember.mutate({
-                    id: newId || 0,
-                    name: values.name || "",
-                    lastname: values.lastname || "",
-                    role: values.role || "",
-                    subtitle: values.subtitle || "",
-                    class: values.class || "",
-                    semesters: values.semesters || "",
-                    status: values.status || "",
-                    description: values.description || "",
-                    github: values.github || "",
-                    github_user: values.github_user || "",
-                    linkedin: values.linkedin || "",
-                    tags: values.tags || "",
+                    id: newId ?? 0,
+                    name: values.name ?? "",
+                    lastname: values.lastname ?? "",
+                    role: values.role ?? "",
+                    subtitle: values.subtitle ?? "",
+                    class: values.class ?? "",
+                    semesters: values.semesters ?? "",
+                    status: values.status ?? "",
+                    description: values.description ?? "",
+                    github: values.github ?? "",
+                    github_user: values.github_user ?? "",
+                    linkedin: values.linkedin ?? "",
+                    tags: values.tags ?? "",
                     image: img,
                 });
             } else {
 
                 updateMember.mutate({
-                    id: data?.id || 0,
-                    name: values.name || "",
-                    lastname: values.lastname || "",
-                    role: values.role || "",
-                    subtitle: values.subtitle || "",
-                    class: values.class || "",
-                    semesters: values.semesters || "",
-                    status: values.status || "",
-                    description: values.description || "",
-                    github: values.github || "",
-                    github_user: values.github_user || "",
-                    linkedin: values.linkedin || "",
-                    tags: values.tags || "",
+                    id: data?.id ?? 0,
+                    name: values.name ?? "",
+                    lastname: values.lastname ?? "",
+                    role: values.role ?? "",
+                    subtitle: values.subtitle ?? "",
+                    class: values.class ?? "",
+                    semesters: values.semesters ?? "",
+                    status: values.status ?? "",
+                    description: values.description ?? "",
+                    github: values.github ?? "",
+                    github_user: values.github_user ?? "",
+                    linkedin: values.linkedin ?? "",
+                    tags: values.tags ?? "",
                 });
 
             }
@@ -87,7 +85,7 @@ const Edit: React.FC<EditProps> = ({ handleClick, data, image, add }) => {
     return (
         <>
             <div className="h-full w-full p-6 overflow-scroll pb-16">
-                <Name name={data?.name || ""} lastname={data?.lastname || ""} />
+                <Name name={data?.name ?? ""} lastname={data?.lastname ?? ""} />
                 <Formik
                     initialValues={{
                         name: data?.name,
@@ -120,16 +118,16 @@ const Edit: React.FC<EditProps> = ({ handleClick, data, image, add }) => {
                             <Input title="Name" id={"name"} data="" />
                             <Input title="Last name" id={"lastName"} data="" />
 
-                            <Input title="Role" id={"role"} data={data?.role || ""} />
-                            <Input title="Subtitle" id={"subtitle"} data={data?.subtitle || ""} />
-                            <Input title="Class" id={"class"} data={data?.class || ""} />
-                            <Input title="Semesters" id={"semesters"} data={data?.semesters || ""} />
-                            <Input title="Status" id={"status"} data={data?.status || ""} />
-                            <Input title="Description" id={"description"} data={data?.description || ""} component={"textArea"} />
-                            <Input title="Github" id={"github"} data={data?.github || ""} />
-                            <Input title="Github User" id={"github_user"} data={data?.github_user || ""} />
-                            <Input title="Linkedin" id={"linkedin"} data={data?.linkedin || ""} />
-                            <Input title="Tags" id={"tags"} data={data?.tags || ""} />
+                            <Input title="Role" id={"role"} data={data?.role ?? ""} />
+                            <Input title="Subtitle" id={"subtitle"} data={data?.subtitle ?? ""} />
+                            <Input title="Class" id={"class"} data={data?.class ?? ""} />
+                            <Input title="Semesters" id={"semesters"} data={data?.semesters ?? ""} />
+                            <Input title="Status" id={"status"} data={data?.status ?? ""} />
+                            <Input title="Description" id={"description"} data={data?.description ?? ""} component={"textArea"} />
+                            <Input title="Github" id={"github"} data={data?.github ?? ""} />
+                            <Input title="Github User" id={"github_user"} data={data?.github_user ?? ""} />
+                            <Input title="Linkedin" id={"linkedin"} data={data?.linkedin ?? ""} />
+                            <Input title="Tags" id={"tags"} data={data?.tags ?? ""} />
                         </div>
                         <button className="absolute right-8 bottom-5 bg-blue-400 self-center text-white rounded-md p-2" type="submit">Save</button>
 
@@ -158,14 +156,12 @@ interface SaveProps {
 
 }
 const ConfirmModal: React.FC<SaveProps> = ({ isOpen, id }) => {
-    const update = api.githubApi.updateFileFromBranch.useMutation();
+    // const update = api.githubApi.updateFileFromBranch.useMutation();
     const deleteMember = api.members.deleteMember.useMutation();
     const deleteImg = api.githubApi.deleteFileFromBranch.useMutation();
-    // const dialog = document.getElementById(
-    //     "111."
-    // ) as HTMLDialogElement;
+
     const dialog = useRef<HTMLDialogElement>(null);
-    const data = api.members.getMembers.useQuery();
+    // const data = api.members.getMembers.useQuery();
 
     const handleConfirm = () => {
         if (id !== undefined)
@@ -179,7 +175,7 @@ const ConfirmModal: React.FC<SaveProps> = ({ isOpen, id }) => {
             branch: "update/members",
             filePath: `src/images/members/${id}.jpg`,
             commitMessage: "Delete member",
-            token: "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"
+            token: "a"
         })
 
 
