@@ -59,11 +59,11 @@ export default function Home() {
           />
           <button
             className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-            onClick={async () => {
-              await createExample.mutateAsync({ texto: input });
-              setInput("");
-              util.test.test2.refetch();
-            }}
+            // onClick={async () => {
+            //   await createExample.mutateAsync({ texto: input });
+            //   setInput("");
+            //   util.test.test2.refetch();
+            // }}
           >
             Create Example
           </button>
