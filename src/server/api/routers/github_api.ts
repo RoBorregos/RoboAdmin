@@ -45,6 +45,9 @@ export const githubApiRouter = createTRPCRouter({
         input.filePath,
         input.fileContent,
         input.commitMessage,
+        // Buffer.from(input.fileContent, "base64"),
+        // input.commitMessage,
+        // input.token,
       );
     }),
 
