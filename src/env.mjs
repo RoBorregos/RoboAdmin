@@ -34,6 +34,9 @@ export const env = createEnv({
     AZURE_AD_CLIENT_ID: z.string().min(1),
     AZURE_AD_CLIENT_SECRET: z.string().min(1),
     AZURE_AD_TENANT_ID: z.string().min(1),
+    GITHUB_APP_ID: z.string().min(1),
+    GITHUB_APP_PRIVATE_KEY: z.string().min(1),
+    GITHUB_APP_INSTALLATION_ID: z.string().min(1),
   },
 
   /**
@@ -61,6 +64,9 @@ export const env = createEnv({
     AZURE_AD_CLIENT_SECRET: process.env.AZURE_AD_CLIENT_SECRET,
     AZURE_AD_TENANT_ID: process.env.AZURE_AD_TENANT_ID,
     NEXT_PUBLIC_DEFAULT_IMAGE: process.env.NEXT_PUBLIC_DEFAULT_IMAGE,
+    GITHUB_APP_ID: process.env.GITHUB_APP_ID,
+    GITHUB_APP_PRIVATE_KEY: process.env.GITHUB_APP_PRIVATE_KEY,
+    GITHUB_APP_INSTALLATION_ID: process.env.GITHUB_APP_INSTALLATION_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

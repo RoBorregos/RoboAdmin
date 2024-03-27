@@ -1,166 +1,200 @@
-import { Octokit } from "@octokit/rest";
+import { App } from "octokit";
+import { env } from "rbrgs/env.mjs";
+
+async function getInstallationId(owner: string, repo: string) {
+  const app = new App({
+    appId: env.GITHUB_APP_ID,
+    privateKey: env.GITHUB_APP_PRIVATE_KEY,
+  });
+
+  const installationResponse = await app.octokit.request(
+    "GET /repos/{owner}/{repo}/installation",
+    {
+      owner,
+      repo,
+    },
+  );
+
+  const installationId = installationResponse.data.id;
+  console.log(installationId);
+
+  return installationId;
+}
 
 async function createBranch(
   owner: string,
   repo: string,
   baseBranch: string,
   newBranch: string,
-  token: string,
 ) {
-  const octokit = new Octokit({ auth: token });
-
-  const baseRef = `heads/${baseBranch}`;
-  const { data: baseRefData } = await octokit.rest.git.getRef({
-    owner,
-    repo,
-    ref: baseRef,
+  const app = new App({
+    appId: env.GITHUB_APP_ID,
+    privateKey: env.GITHUB_APP_PRIVATE_KEY,
   });
 
-  const newRef = `refs/heads/${newBranch}`;
-  await octokit.rest.git.createRef({
+  const octokit = await app.getInstallationOctokit(
+    Number(env.GITHUB_APP_INSTALLATION_ID),
+  );
+
+  const { data: baseRef } = await octokit.request(
+    "GET /repos/{owner}/{repo}/git/ref/{ref}",
+    {
+      owner,
+      repo,
+      ref: `heads/${baseBranch}`,
+    },
+  );
+
+  if (!baseRef.object) {
+    throw new Error("base ref not found");
+  }
+
+  const res = await octokit.request("POST /repos/{owner}/{repo}/git/refs", {
     owner,
     repo,
-    ref: newRef,
-    sha: baseRefData.object.sha,
+    ref: `refs/heads/${newBranch}`,
+    sha: baseRef.object.sha,
   });
+
+  console.log(res);
+  return res;
 }
 
 async function addFileToBranch(
   owner: string,
   repo: string,
   branch: string,
-  filePath: string,
-  fileContent: Buffer,
-  commitMessage: string,
-  token: string,
+  path: string,
+  content: string,
+  message: string,
 ) {
-  const octokit = new Octokit({ auth: token });
+  const app = new App({
+    appId: env.GITHUB_APP_ID,
+    privateKey: env.GITHUB_APP_PRIVATE_KEY,
+  });
 
-  const { data: fileData } =
-    await octokit.rest.repos.createOrUpdateFileContents({
+  const octokit = await app.getInstallationOctokit(
+    Number(env.GITHUB_APP_INSTALLATION_ID),
+  );
+
+  try {
+    await octokit.request("GET /repos/{owner}/{repo}/contents/{path}", {
       owner,
       repo,
-      path: filePath,
-      message: commitMessage,
-      content: Buffer.from(fileContent).toString("base64"),
-      branch,
+      path,
+      ref: branch,
     });
 
-  return fileData;
+    console.log("file already exists");
+  } catch (error: unknown) {
+    // console.log("found error", error);
+    if ((error as { status: number }).status !== 404) {
+      throw error;
+    }
+
+    const { data: result } = await octokit.request(
+      "PUT /repos/{owner}/{repo}/contents/{path}",
+      {
+        owner,
+        repo,
+        path,
+        message,
+        content: Buffer.from(content).toString("base64"),
+        branch,
+      },
+    );
+
+    return result;
+  }
 }
 
 async function updateFileFromBranch(
   owner: string,
   repo: string,
   branch: string,
-  filePath: string,
-  fileContent: Buffer,
-  commitMessage: string,
-  token: string,
+  path: string,
+  content: string,
+  message: string,
 ) {
-  const octokit = new Octokit({ auth: token });
-
-  const { data: existingFileData } = await octokit.rest.repos.getContent({
-    owner,
-    repo,
-    path: filePath,
-    ref: branch,
+  const app = new App({
+    appId: env.GITHUB_APP_ID,
+    privateKey: env.GITHUB_APP_PRIVATE_KEY,
   });
 
-  if (!Array.isArray(existingFileData)) {
-    const { data: fileData } =
-      await octokit.rest.repos.createOrUpdateFileContents({
-        owner,
-        repo,
-        path: filePath,
-        message: commitMessage,
-        content: fileContent.toString("base64"),
-        sha: existingFileData.sha,
-        branch,
-      });
+  const octokit = await app.getInstallationOctokit(
+    Number(env.GITHUB_APP_INSTALLATION_ID),
+  );
 
-    return fileData;
-  }
-}
-
-async function deleteFileFromBranch(
-  owner: string,
-  repo: string,
-  branch: string,
-  filePath: string,
-  commitMessage: string,
-  token: string,
-) {
-  const octokit = new Octokit({ auth: token });
-
-  const { data: existingFileData } = await octokit.rest.repos.getContent({
-    owner,
-    repo,
-    path: filePath,
-    ref: branch,
-  });
-
-  if (!Array.isArray(existingFileData)) {
-    const { data: fileData } = await octokit.rest.repos.deleteFile({
+  const { data, status } = await octokit.request(
+    "GET /repos/{owner}/{repo}/contents/{path}",
+    {
       owner,
       repo,
-      path: filePath,
-      message: commitMessage,
-      sha: existingFileData.sha,
-      branch,
-    });
+      path,
+      ref: branch,
+    },
+  );
 
-    return fileData;
+  if (status !== 200) {
+    throw new Error("file not found");
   }
-}
+  if (Array.isArray(data)) {
+    throw new Error("unexpected data type");
+  }
 
-async function mergeBranch(
-  owner: string,
-  repo: string,
-  baseBranch: string,
-  headBranch: string,
-  token: string,
-) {
-  const octokit = new Octokit({ auth: token });
+  const { data: result } = await octokit.request(
+    "PUT /repos/{owner}/{repo}/contents/{path}",
+    {
+      owner,
+      repo,
+      path,
+      message,
+      content: Buffer.from(content).toString("base64"),
+      branch,
+      sha: data.sha,
+    },
+  );
 
-  const { data: mergeData } = await octokit.rest.repos.merge({
-    owner,
-    repo,
-    base: baseBranch,
-    head: headBranch,
-  });
-
-  return mergeData;
+  return result;
 }
 
 async function createPullRequest(
   owner: string,
   repo: string,
   baseBranch: string,
-  headBranch: string,
+  newBranch: string,
   title: string,
   body: string,
-  token: string,
 ) {
-  const octokit = new Octokit({ auth: token });
-
-  const { data: pullRequestData } = await octokit.rest.pulls.create({
-    owner,
-    repo,
-    head: headBranch,
-    base: baseBranch,
-    title,
-    body,
+  const app = new App({
+    appId: env.GITHUB_APP_ID,
+    privateKey: env.GITHUB_APP_PRIVATE_KEY,
   });
 
-  return pullRequestData;
+  const octokit = await app.getInstallationOctokit(
+    Number(env.GITHUB_APP_INSTALLATION_ID),
+  );
+
+  const { data: pullRequest } = await octokit.request(
+    "POST /repos/{owner}/{repo}/pulls",
+    {
+      owner,
+      repo,
+      head: newBranch,
+      base: baseBranch,
+      title,
+      body,
+    },
+  );
+
+  console.log(pullRequest);
+  return pullRequest;
 }
 
 export {
+  getInstallationId,
   createBranch,
   addFileToBranch,
   updateFileFromBranch,
-  deleteFileFromBranch,
-  mergeBranch,
   createPullRequest,
 };

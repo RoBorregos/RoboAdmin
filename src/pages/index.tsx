@@ -11,6 +11,12 @@ export default function Home() {
   const createExample = api.test.test1.useMutation();
   const [input, setInput] = useState("");
   const util = api.useContext();
+  const handleCreate = async () => {
+    await createExample.mutateAsync({ texto: input });
+    setInput("");
+    await util.test.test2.refetch();
+    return;
+  };
   return (
     <>
       <Head>
