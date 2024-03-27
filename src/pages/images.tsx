@@ -16,11 +16,13 @@ const ImagesPage = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-10">
       <ImageDrop handleFileSelect={handleFileSelect} />
+
       {selectedFile && (
         <div>
           <ImagePreview image={URL.createObjectURL(selectedFile)} onFinishedCropping={(image) => setCroppedImage(image)} desiredWidth={100} desiredHeight={200} />
         </div>
       )}
+      
       {croppedImage && <img src={croppedImage} alt="" />}
     </div>
   );

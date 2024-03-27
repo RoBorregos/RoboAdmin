@@ -15,7 +15,7 @@ const ImageCropper: FC<ImageCropperProps> = ({
   desiredWidth,
   desiredHeight,
 }) => {
-  const aspectRatio = desiredWidth / desiredHeight; 
+  const aspectRatio = desiredWidth / desiredHeight;
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area>({
@@ -24,6 +24,7 @@ const ImageCropper: FC<ImageCropperProps> = ({
     width: 0,
     height: 0,
   });
+
 
   const createImage = (url: string) =>
     new Promise<HTMLImageElement>((resolve, reject) => {
@@ -38,26 +39,26 @@ const ImageCropper: FC<ImageCropperProps> = ({
     const newImage = await createImage(imageSrc);
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
-    
+
     if (!ctx || !newImage) {
       return;
     }
-  
+
     canvas.width = newImage.width;
     canvas.height = newImage.height;
-  
+
     ctx.drawImage(newImage, 0, 0);
-  
+
     const croppedCanvas = document.createElement("canvas");
     const croppedCtx = croppedCanvas.getContext("2d");
-    
+
     if (!croppedCtx) {
       return;
     }
-  
+
     croppedCanvas.width = desiredWidth;
     croppedCanvas.height = desiredHeight;
-  
+
     croppedCtx.drawImage(
       canvas,
       pixelCrop.x,
@@ -69,17 +70,17 @@ const ImageCropper: FC<ImageCropperProps> = ({
       desiredWidth,
       desiredHeight
     );
-  
+
     console.log(croppedCanvas);
     console.log("getCroppedImg", croppedCanvas.toDataURL("image/png"));
-  
+
     return croppedCanvas.toDataURL("image/png");
   };
-  
 
-  async function onFinished() {
+
+  async function onFinished(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.preventDefault()
     const cropped = await getCroppedImg(image, croppedAreaPixels, desiredWidth, desiredHeight);
-
     console.log("onFinished", cropped);
 
     if (!cropped) {
@@ -90,7 +91,7 @@ const ImageCropper: FC<ImageCropperProps> = ({
   }
 
   return (
-    <div className="flex h-1/2 w-screen flex-col items-center gap-5">
+    <div className="fixed inset-0 text-black bg-black bg-opacity-25 backdrop-blur-sm flex flex-col items-center justify-center z-50">
       <div className="relative h-80 w-1/2">
         <Cropper
           image={image}
@@ -102,6 +103,7 @@ const ImageCropper: FC<ImageCropperProps> = ({
           onZoomChange={setZoom}
         />
       </div>
+      
       <input
         type="range"
         value={zoom}
@@ -112,7 +114,7 @@ const ImageCropper: FC<ImageCropperProps> = ({
         onChange={(e) => setZoom(Number(e.target.value))}
         className="px-6 py-0"
       />
-      <button className="rounded-lg bg-slate-200 px-5 py-2" onClick={() => void onFinished()}>Crop</button>
+      <button className="rounded-lg bg-slate-200 px-5 py-2" onClick={(e) => void onFinished(e)}>Crop</button>
     </div>
   );
 };

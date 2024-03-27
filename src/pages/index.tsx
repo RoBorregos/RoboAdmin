@@ -10,8 +10,10 @@ import ImagePreview from "rbrgs/components/imgPreview";
 
 export default function Home() {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+
   const examples = api.test.test2.useQuery();
   const createExample = api.test.test1.useMutation();
+  
   const [input, setInput] = useState("");
   // const util = api.useContext();
   // const handleCreate = async () => {

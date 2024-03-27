@@ -5,6 +5,8 @@ import { sponsorRouter } from "rbrgs/server/api/routers/sponsor";
 import { githubApiRouter } from "rbrgs/server/api/routers/github_api";
 import { membersRouter } from "rbrgs/server/api/routers/members";
 
+import {projectRouter} from "rbrgs/server/api/routers/projects"
+
 /**
  * This is the primary router for your server.
  *
@@ -16,6 +18,7 @@ export const appRouter = createTRPCRouter({
   githubApi: githubApiRouter,
   sponsor: sponsorRouter,
   members: membersRouter,
+  projects:projectRouter,
 });
 
 // export type definition of API

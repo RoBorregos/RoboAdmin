@@ -6,12 +6,14 @@ import { api } from "rbrgs/utils/api";
 
 import "rbrgs/styles/globals.css";
 
+
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
   return (
     <SessionProvider session={session}>
+     
       <Component {...pageProps} />
     </SessionProvider>
   );
