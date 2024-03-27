@@ -12,7 +12,7 @@ const Layout = ({
   description?: string;
 }) => {
   const routes = [
-    { name: "User information", path: "/" },
+    { name: "User information", path: "/members" },
     { name: "Sponsor Packs", path: "/sponsors" },
     { name: "History", path: "/history" },
     {
