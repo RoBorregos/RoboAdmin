@@ -12,6 +12,11 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "rbrgs/server/api/trpc";
+import {
+  createBranch,
+  isBranchAvailable,
+  updateFileFromBranch,
+} from "rbrgs/server/github_api_utils";
 
 // TODO: add proper authorization
 
@@ -407,4 +412,33 @@ export const sponsorRouter = createTRPCRouter({
         },
       });
     }),
+
+  uploadToRepository: protectedProcedure.mutation(async ({ ctx }) => {
+    const sponsorBranch = "sponsors";
+    const owner = "RoBorregos";
+    const repo = "roborregos-web";
+    const baseBranch = "develop";
+
+    if (!(await isBranchAvailable({ branch: sponsorBranch, owner, repo }))) {
+      await createBranch(owner, repo, baseBranch, sponsorBranch);
+    }
+
+    const content = await generateSponsorsJson({ db: ctx.db });
+    const filePath = "src/data/sponsors.json";
+
+    if (typeof content === "number") {
+      throw new Error("Failed to generate sponsors information.");
+    }
+
+    await updateFileFromBranch(
+      owner,
+      repo,
+      sponsorBranch,
+      filePath,
+      content,
+      "Update sponsors information. ",
+    );
+
+    return "Successfuly updated sponsors information.";
+  }),
 });

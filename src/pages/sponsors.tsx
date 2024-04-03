@@ -35,6 +35,17 @@ export default function SponsorsPage() {
     },
   });
 
+  const mutationUpload = api.sponsor.uploadToRepository.useMutation({
+    onSuccess: (result) => {
+      if (typeof result === "string") {
+        alert(result);
+      } 
+    },
+    onError: (error) => {
+      alert(error.message);
+    },
+  });
+
   let modalTitle = "undefined";
   if (seeWindow === "sponsors") {
     modalTitle = "Create Sponsor";
@@ -77,12 +88,20 @@ export default function SponsorsPage() {
           <SearchBar setSearch={setSearch} className="w-80" />
         </div>
         <div className="mb-4 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-3 rounded-md bg-slate-300 p-2 duration-700 hover:bg-blue-400">
-          <BiUpload size={30} className="duration-1000 hover:text-purple-800" />
+          <BiUpload size={30} className="duration-1000 hover:text-purple-800" 
+          
+          onClick={() => {
+            if (confirm("Are you sure you want to upload sponsors?")) {
+              mutationUpload.mutate();
+            }
+          }}
+          
+          />
           <BiDownload
             size={30}
             className="duration-1000 hover:text-purple-800"
             onClick={() => {
-              if (confirm("Are you sure you want to fetch sponsors?")) {
+              if (confirm("Are you sure you want to fetch sponsors? (This will overwrite the current sponsors and reset to the last saved sponsors in the webpage)")) {
                 mutationFetch.mutate({});
               }
             }}

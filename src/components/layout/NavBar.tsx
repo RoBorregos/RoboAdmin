@@ -86,7 +86,7 @@ const NavBar = ({
               <img
                 className="h-8 w-auto"
                 src="https://jwxqxlsoznvanzoqgpvb.supabase.co/storage/v1/object/public/profile-pictures/Logo_blanco.png"
-                alt="Your Company"
+                alt="RoBorregos"
               />
             </div>
             <div className="hidden sm:ml-6 sm:block">

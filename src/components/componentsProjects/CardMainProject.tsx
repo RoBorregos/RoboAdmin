@@ -9,7 +9,7 @@ interface CardMainProjectProps {
   image: string;
   editable: boolean;
   id: string;
-  cropped: string | null
+  cropped?: string | null | undefined;
 }
 
 const CardMainProject: React.FC<CardMainProjectProps> = ({

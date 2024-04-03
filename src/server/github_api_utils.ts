@@ -191,10 +191,50 @@ async function createPullRequest(
   return pullRequest;
 }
 
+async function isBranchAvailable({
+  owner,
+  repo,
+  branch,
+}: {
+  owner: string;
+  repo: string;
+  branch: string;
+}) {
+
+  const app = new App({
+    appId: env.GITHUB_APP_ID,
+    privateKey: env.GITHUB_APP_PRIVATE_KEY,
+  });
+
+  const octokit = await app.getInstallationOctokit(
+    Number(env.GITHUB_APP_INSTALLATION_ID),
+  );
+
+  console.log("before ref:")
+
+  const { data: baseRef } = await octokit.request(
+    "GET /repos/{owner}/{repo}/git/ref/{ref}",
+    {
+      owner,
+      repo,
+      ref: `heads/${branch}`,
+    },
+  );
+
+  console.log("baseref:", baseRef)
+
+  if (!baseRef.object) {
+    return false;
+  }
+
+  return true;
+}
+
 export {
   getInstallationId,
   createBranch,
   addFileToBranch,
   updateFileFromBranch,
   createPullRequest,
+  isBranchAvailable,
 };
