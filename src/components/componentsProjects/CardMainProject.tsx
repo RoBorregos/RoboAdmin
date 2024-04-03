@@ -29,7 +29,7 @@ const CardMainProject: React.FC<CardMainProjectProps> = ({
   useEffect(() => {
     const fecthData = async () => {
       const response = await fetch(`https://raw.githubusercontent.com/RoBorregos/roborregos-web/develop/src/images/projects/${image}.jpg`)
-      setImage(response.url)
+      setImage(response.url);
     }
     fecthData()
 

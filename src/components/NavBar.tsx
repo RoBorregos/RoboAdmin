@@ -1,11 +1,18 @@
 import { api } from 'rbrgs/utils/api'
 import React from 'react'
 
+
+
 function NavBar() {
 
     // const resetData=api.projects.resetDBProjects.useMutation()
     const resetDb = api.projects.resetDBProjects.useMutation()
     const util = api.useContext();
+
+    async function reset(){
+        await resetDb.mutateAsync().catch((e) => console.log(e));
+        await util.projects.getProjects.invalidate().catch((e) => console.log(e));
+    }
     return (
         <div>
             <nav className="bg-white border-gray-200 dark:bg-gray-900 flex items-center">
@@ -27,10 +34,7 @@ function NavBar() {
                                 </span>
                             </button>
                             <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium rounded-lg group bg-gradient-to-br bg-gray-900 hover:bg-gradient-to-br hover:from-cyan-500 hover:to-blue-500  text-white focus:ring-4 focus:outline-none "
-                                onClick={async () => {
-                                    await resetDb.mutateAsync();
-                                    await util.projects.getProjects.invalidate();
-                                }}>
+                                onClick={void reset}>
                                 <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-md hover:from-gray-900 hover:to-gray-900">
                                     Reset TODOALV
                                 </span>

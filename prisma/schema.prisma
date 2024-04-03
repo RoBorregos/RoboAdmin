@@ -77,7 +77,7 @@ model Benefits {
   esDescription String
   enDescription String
   sponsorId     String
-  order     Int        @default(100)
+  order         Int         @default(100)
   SponsorPack   SponsorPack @relation(fields: [sponsorId], references: [id], onDelete: Cascade)
 }
 
@@ -88,7 +88,7 @@ model Sponsor {
   name      String
   img_path  String
   url       String
-  order     Int        @default(100)
+  order     Int      @default(100)
 }
 
 model Telemetry {
@@ -109,9 +109,9 @@ model SponsorHistory {
 }
 
 model Projects {
-  id          String   @id
+  id          String   @id @default(cuid())
   createdAt   DateTime @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime @default(now())
   typeProject String
   title       String
   description String?
