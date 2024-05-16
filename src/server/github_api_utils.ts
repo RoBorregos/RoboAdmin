@@ -1,10 +1,14 @@
 import { App } from "octokit";
 import { env } from "rbrgs/env.mjs";
 
+const privateKey = () => Buffer.from(env.GITHUB_APP_PRIVATE_KEY, 'base64').toString('ascii');
+
 async function getInstallationId(owner: string, repo: string) {
+  console.log(env.GITHUB_APP_ID, privateKey());
+
   const app = new App({
     appId: env.GITHUB_APP_ID,
-    privateKey: env.GITHUB_APP_PRIVATE_KEY,
+    privateKey: privateKey(),
   });
 
   const installationResponse = await app.octokit.request(
@@ -29,7 +33,7 @@ async function createBranch(
 ) {
   const app = new App({
     appId: env.GITHUB_APP_ID,
-    privateKey: env.GITHUB_APP_PRIVATE_KEY,
+    privateKey: privateKey(),
   });
 
   const octokit = await app.getInstallationOctokit(
@@ -70,7 +74,7 @@ async function addFileToBranch(
 ) {
   const app = new App({
     appId: env.GITHUB_APP_ID,
-    privateKey: env.GITHUB_APP_PRIVATE_KEY,
+    privateKey: privateKey(),
   });
 
   const octokit = await app.getInstallationOctokit(
@@ -118,7 +122,7 @@ async function updateFileFromBranch(
 ) {
   const app = new App({
     appId: env.GITHUB_APP_ID,
-    privateKey: env.GITHUB_APP_PRIVATE_KEY,
+    privateKey: privateKey(),
   });
 
   const octokit = await app.getInstallationOctokit(
@@ -168,7 +172,7 @@ async function createPullRequest(
 ) {
   const app = new App({
     appId: env.GITHUB_APP_ID,
-    privateKey: env.GITHUB_APP_PRIVATE_KEY,
+    privateKey: privateKey(),
   });
 
   const octokit = await app.getInstallationOctokit(
