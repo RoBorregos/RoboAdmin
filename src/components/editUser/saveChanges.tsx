@@ -30,8 +30,9 @@ const SaveModal: React.FC<SaveProps> = ({ isOpen }) => {
     const data = api.members.getMembers.useQuery();
 
     const handleSave = () => {
-        
+
         const jsonRes = JSON.stringify(data.data);
+        // console.log(jsonRes)
         // console.log(jsonRes)
         const res = update.mutate({
             owner: "RoBorregos",
@@ -63,8 +64,8 @@ const SaveModal: React.FC<SaveProps> = ({ isOpen }) => {
             }
         >
             <div>
-            <div className="text-white mb-4 pr-10">
-                    Are you sure you want to delete the member?
+                <div className="text-white mb-4 pr-10">
+                    Are you sure you want to save changes?
                 </div>
                 <div className="flex">
                     <button onClick={() => dialog.current?.close()} className="bg-slate-400 p-2 flex rounded-md justify-center text-white hover:bg-slate-300">
