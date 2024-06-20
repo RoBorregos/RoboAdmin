@@ -2,8 +2,7 @@ import { exampleRouter } from "rbrgs/server/api/routers/example";
 import { createTRPCRouter } from "rbrgs/server/api/trpc";
 import { testRouter } from "./routers/test";
 import { githubApiRouter } from "rbrgs/server/api/routers/github_api";
-import { githubApiRouter } from "./routers/github_api";
-
+import { membersRouter } from "./routers/members";
 /**
  * This is the primary router for your server.
  *

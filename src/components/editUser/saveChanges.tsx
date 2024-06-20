@@ -40,8 +40,7 @@ const SaveModal: React.FC<SaveProps> = ({ isOpen }) => {
             branch: "update/members",
             filePath: `src/data/members.json`,
             fileContent: jsonRes,
-            commitMessage: "Update members",
-            token: "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"
+            commitMessage: "Update members"
 
         })
         console.log(res);

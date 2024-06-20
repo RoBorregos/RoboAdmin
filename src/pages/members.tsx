@@ -93,7 +93,7 @@ const Members = () => {
             {search ? (
                 <SearchContainer search={input} />
             ) : (
-                <div className="grid grid-cols-6 md:grid-cols-7 gap-2 mt-4">
+                <div className="grid grid-cols-6 xl:grid-cols-12 2xl:grid-flow-col-12 gap-2 mt-4">
                     {members?.map((member, key) => (
                         <MemberCard key={key} member={member} />
                     ))}
@@ -115,7 +115,7 @@ const SearchContainer = ({ search }: { search: string }) => {
     }
 
     return (
-        <div className="h-screen overflow-scroll grid grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-2 mt-4">
+        <div className="h-screen grid grid-cols-6 xl:grid-cols-10 2xl:grid-flow-col-12 gap-2 mt-4">
             {members && (
                 <>
                 {members.map((member, key) => (
