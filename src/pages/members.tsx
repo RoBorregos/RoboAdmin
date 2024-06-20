@@ -22,62 +22,6 @@ const Members = () => {
 
     }
 
-    // console.log(last.data);
-    // const getMembers2 = async() => {
-    //     const res = api.members.getMembers.useQuery();
-    //     if (typeof res !== undefined)
-    //         setMembers(res?.data);
-    // }
-
-    //     const fetchData = async () => {
-    //         const response = await fetch('https://raw.githubusercontent.com/RoBorregos/roborregos-web/develop/src/data/members.json');
-    //         const data = await response.json();
-    //         setMembers(data.members);
-
-    //         // console.log(data.members);
-
-    //     //     for (let i = 0; i < members.length; i++) {
-    //     //         const data = members[i];
-    //     //         if (data !== undefined) {
-
-
-    //     //             const def: Member = data;
-    //     //             const id = def.id;
-    //     //             const idNum = parseInt(id.toString());
-    //     //             console.log();
-    //     //         const res = await addMember.mutate({
-    //     //             id: idNum,
-    //     //             name: def.name || "",
-    //     //             lastname: def.lastname || "",
-    //     //             role: def.role || "",
-    //     //             subtitle: def.subtitle || "",
-    //     //             class: def.class || "",
-    //     //             semesters: def.semesters || "",
-    //     //             status: def.status || "",
-    //     //             description: def.description || "",
-    //     //             github: def.github || "",
-    //     //             github_user: def.github_user || "",
-    //     //             linkedin: def.linkedin || "",
-    //     //             tags: def.tags || "",
-
-    //     //     })
-
-    //     // };
-
-    //     // }
-    // }
-
-    // useEffect(() => {
-    //     // fetchData();
-
-    //     const result = getMembers.data?.map
-    //     if (result !== undefined) {
-    //         console.log(result);
-
-    //         // setMembers(result.);
-    //     }
-    // }, []);
-
     return (
 
         <div className="p-5 bg-stone-900 h-max">
@@ -93,7 +37,7 @@ const Members = () => {
             {search ? (
                 <SearchContainer search={input} />
             ) : (
-                <div className="grid grid-cols-6 xl:grid-cols-12 2xl:grid-flow-col-12 gap-2 mt-4">
+                <div className="grid grid-cols-6 xl:grid-cols-9 2xl:grid-flow-col-12 gap-2 mt-4">
                     {members?.map((member, key) => (
                         <MemberCard key={key} member={member} />
                     ))}
@@ -109,13 +53,15 @@ const SearchContainer = ({ search }: { search: string }) => {
     // console.log(members);
 
     if (isLoading) {
-        return <p>Cargando...</p>;
+        return <p className="text-white my-8">Loading...</p>;
     } else if (!members || members.length === 0) {
         return <p className="text-white">No se encontraron resultados</p>;
     }
 
     return (
-        <div className="h-screen grid grid-cols-6 xl:grid-cols-10 2xl:grid-flow-col-12 gap-2 mt-4">
+        <div className="bg-stone-900 h-screen">
+
+        <div className="bg-stone-900 grid grid-cols-6 xl:grid-cols-9 2xl:grid-flow-col-12 gap-2 mt-4">
             {members && (
                 <>
                 {members.map((member, key) => (
@@ -123,6 +69,7 @@ const SearchContainer = ({ search }: { search: string }) => {
                 ))}
                 </>
             )}
+        </div>
         </div>
     )
 }

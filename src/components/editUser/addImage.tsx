@@ -25,8 +25,7 @@ const AddImage = () => {
                 branch: "update/members",
                 filePath: `src/images/members`,
                 fileContent: image,
-                commitMessage: "Upload image",
-                token: "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"
+                commitMessage: "Upload image"
             })
 
             alert("Image uploaded");

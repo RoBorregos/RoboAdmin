@@ -158,7 +158,7 @@ interface SaveProps {
 const ConfirmModal: React.FC<SaveProps> = ({ isOpen, id }) => {
     // const update = api.githubApi.updateFileFromBranch.useMutation();
     const deleteMember = api.members.deleteMember.useMutation();
-    const deleteImg = api.githubApi.deleteFileFromBranch.useMutation();
+    // const deleteImg = api.githubApi.deleteFileFromBranch.useMutation();
 
     const dialog = useRef<HTMLDialogElement>(null);
     // const data = api.members.getMembers.useQuery();
@@ -169,14 +169,14 @@ const ConfirmModal: React.FC<SaveProps> = ({ isOpen, id }) => {
                 id
             )
 
-        deleteImg.mutate({
-            owner: "RoBorregos",
-            repo: "roborregos-web",
-            branch: "update/members",
-            filePath: `src/images/members/${id}.jpg`,
-            commitMessage: "Delete member",
-            token: "a"
-        })
+        // deleteImg.mutate({
+        //     owner: "RoBorregos",
+        //     repo: "roborregos-web",
+        //     branch: "update/members",
+        //     filePath: `src/images/members/${id}.jpg`,
+        //     commitMessage: "Delete member",
+        //     token: "a"
+        // })
 
 
         alert("Removed");
