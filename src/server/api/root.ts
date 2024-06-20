@@ -2,6 +2,7 @@ import { exampleRouter } from "rbrgs/server/api/routers/example";
 import { createTRPCRouter } from "rbrgs/server/api/trpc";
 import { testRouter } from "./routers/test";
 import { githubApiRouter } from "rbrgs/server/api/routers/github_api";
+import { githubApiRouter } from "./routers/github_api";
 
 /**
  * This is the primary router for your server.
@@ -11,6 +12,7 @@ import { githubApiRouter } from "rbrgs/server/api/routers/github_api";
 export const appRouter = createTRPCRouter({
   example: exampleRouter,
   test: testRouter,
+  members: membersRouter,
   githubApi: githubApiRouter,
 });
 
