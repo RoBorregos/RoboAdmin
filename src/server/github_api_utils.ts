@@ -1,7 +1,8 @@
 import { App } from "octokit";
 import { env } from "rbrgs/env.mjs";
 
-const privateKey = () => Buffer.from(env.GITHUB_APP_PRIVATE_KEY, 'base64').toString('ascii');
+const privateKey = () =>
+  Buffer.from(env.GITHUB_APP_PRIVATE_KEY, "base64").toString("ascii");
 
 async function getInstallationId(owner: string, repo: string) {
   console.log(env.GITHUB_APP_ID, privateKey());
@@ -39,6 +40,18 @@ async function createBranch(
   const octokit = await app.getInstallationOctokit(
     Number(env.GITHUB_APP_INSTALLATION_ID),
   );
+
+  // return if branch already exists
+  try {
+    await octokit.request("GET /repos/{owner}/{repo}/git/ref/{ref}", {
+      owner,
+      repo,
+      ref: `heads/${newBranch}`,
+    });
+
+    console.log("branch already exists");
+    return;
+  } catch (error: unknown) {}
 
   const { data: baseRef } = await octokit.request(
     "GET /repos/{owner}/{repo}/git/ref/{ref}",
@@ -103,7 +116,7 @@ async function addFileToBranch(
         repo,
         path,
         message,
-        content: Buffer.from(content).toString("base64"),
+        content,//: Buffer.from(content).toString("base64"),
         branch,
       },
     );
@@ -184,15 +197,50 @@ async function createPullRequest(
     {
       owner,
       repo,
-      head: newBranch,
-      base: baseBranch,
       title,
       body,
+      head: newBranch,
+      base: baseBranch,
     },
   );
 
   console.log(pullRequest);
   return pullRequest;
+}
+
+async function updateFileAndCreatePullRequest({
+  branch,
+  filePath,
+  fileContent,
+  commitMessage,
+  title,
+}: {
+  branch: string;
+  filePath: string;
+  fileContent: string;
+  commitMessage: string;
+  title: string;
+}) {
+  // await updateFileFromBranch(
+  //   "RoBorregos",
+  //   "roborregos-web",
+  //   branch,
+  //   filePath,
+  //   fileContent,
+  //   commitMessage,
+  // );
+
+  // wait 1 second to let the file update
+  // await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  await createPullRequest(
+    "RoBorregos",
+    "roborregos-web",
+    'add-member-119',
+    "develop",
+    title,
+    commitMessage,
+  );
 }
 
 export {
@@ -201,4 +249,5 @@ export {
   addFileToBranch,
   updateFileFromBranch,
   createPullRequest,
+  updateFileAndCreatePullRequest,
 };

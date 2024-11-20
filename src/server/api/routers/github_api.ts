@@ -7,7 +7,6 @@ import {
   updateFileFromBranch,
 } from "rbrgs/server/github_api_utils";
 
-
 export const githubApiRouter = createTRPCRouter({
   createBranch: protectedProcedure
     .input(
@@ -39,12 +38,14 @@ export const githubApiRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
+      await createBranch(input.owner, input.repo, "develop", input.branch);
+      
       await addFileToBranch(
         input.owner,
         input.repo,
         input.branch,
         input.filePath,
-        input.fileContent,
+        input.fileContent.replace(/^data:image\/[a-z]+;base64,/, ''),
         input.commitMessage,
       );
     }),
@@ -92,4 +93,40 @@ export const githubApiRouter = createTRPCRouter({
         input.body,
       );
     }),
+
+  updateFileAndCreatePullRequest: protectedProcedure
+    .input(
+      z.object({
+        branch: z.string(),
+        filePath: z.string(),
+        fileContent: z.string(),
+        commitMessage: z.string(),
+        title: z.string(),
+      }),
+    )
+    .mutation(
+      async ({
+        input: { branch, filePath, fileContent, commitMessage, title },
+      }) => {
+        await createBranch("RoBorregos", "roborregos-web", "develop", branch);
+
+        await updateFileFromBranch(
+          "RoBorregos",
+          "roborregos-web",
+          branch,
+          filePath,
+          fileContent,
+          commitMessage,
+        );
+
+        await createPullRequest(
+          "RoBorregos",
+          "roborregos-web",
+          branch,
+          "develop",
+          title,
+          commitMessage,
+        );
+      },
+    ),
 });
