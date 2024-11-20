@@ -36,6 +36,7 @@ export default function Home() {
       )}
       {croppedImage && <img src={croppedImage} alt="" />}
     </div>
+    <AuthShowcase />
     </>
   );
 }
@@ -49,7 +50,7 @@ function AuthShowcase() {
   );
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
+    <div className="flex flex-col items-center justify-center gap-4 bg-black">
       <p className="text-center text-2xl text-white">
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
