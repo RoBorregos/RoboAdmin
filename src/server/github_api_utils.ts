@@ -221,23 +221,20 @@ async function updateFileAndCreatePullRequest({
   commitMessage: string;
   title: string;
 }) {
-  // await updateFileFromBranch(
-  //   "RoBorregos",
-  //   "roborregos-web",
-  //   branch,
-  //   filePath,
-  //   fileContent,
-  //   commitMessage,
-  // );
-
-  // wait 1 second to let the file update
-  // await new Promise((resolve) => setTimeout(resolve, 5000));
+  await updateFileFromBranch(
+    "RoBorregos",
+    "roborregos-web",
+    branch,
+    filePath,
+    fileContent,
+    commitMessage,
+  );
 
   await createPullRequest(
     "RoBorregos",
     "roborregos-web",
-    'add-member-119',
     "develop",
+    branch,
     title,
     commitMessage,
   );

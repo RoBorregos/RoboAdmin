@@ -41,9 +41,9 @@ export const membersRouter = createTRPCRouter({
         image: input.image,
       };
 
-      // await ctx.db.member.create({
-      //   data
-      // });
+      await ctx.db.member.create({
+        data
+      });
 
       const updatedData = await ctx.db.member.findMany({
         select: {
@@ -67,12 +67,10 @@ export const membersRouter = createTRPCRouter({
         },
       });
 
-      console.log(updatedData);
-
       await updateFileAndCreatePullRequest({
         branch: `add-member-${input.id}`,
         filePath: `src/data/members.json`,
-        fileContent: `{"members": ${JSON.stringify(updatedData)}}`,
+        fileContent: `{"members": ${JSON.stringify(updatedData, null, "\t")}}`,
         commitMessage: `Add member ${input.id}`,
         title: `Add member ${input.id}`,
       });
